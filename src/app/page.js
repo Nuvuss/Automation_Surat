@@ -91,7 +91,7 @@ const TEMPLATES = {
     signerName: 'Pita Rini Fajrian Ramadhani',
     signerEmail: 'pita@revou.co',
     signerTitle: 'Admission lead',
-    hasSignatureImage: true,
+    hasSignatureImage: false,
   }
 };
 
