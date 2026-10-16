@@ -10,6 +10,11 @@ const jakartaSans = Plus_Jakarta_Sans({
 export const metadata = {
   title: "Generator Surat Penawaran RevoU - Enterprise Partnership",
   description: "Aplikasi otomatisasi pembuatan surat penawaran program RevoU ke perusahaan mitra.",
+  icons: {
+    icon: "/revou-logo.png",
+    shortcut: "/revou-logo.png",
+    apple: "/revou-logo.png",
+  },
 };
 
 export default function RootLayout({ children }) {

@@ -4,9 +4,9 @@ import React, { useState, useId, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 
 // Highlight helper component placed at module scope to comply with React 19 static component rules
-function HighlightSpan({ children, isHighlighted = false, className = '' }) {
+function HighlightSpan({ children, className = '' }) {
   return (
-    <span className={`hl-dynamic ${isHighlighted ? 'hl-active' : ''} ${className}`}>
+    <span className={`hl-dynamic hl-active ${className}`}>
       {children}
     </span>
   );
@@ -16,12 +16,12 @@ function HighlightSpan({ children, isHighlighted = false, className = '' }) {
 function DigitalSignature() {
   return (
     <svg className="signature-svg" viewBox="0 0 160 55" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path 
-        d="M15 32 C15 14, 26 4, 31 22 C34 35, 38 45, 43 26 C46 14, 49 7, 53 22 C56 32, 61 42, 66 20 C69 11, 73 18, 77 29 C83 45, 89 18, 96 28 C101 35, 109 40, 116 28 C123 16, 131 23, 136 35 C141 45, 131 52, 111 49 C91 45, 71 39, 51 42 C31 45, 21 39, 10 35" 
-        stroke="#111827" 
-        strokeWidth="2.2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
+      <path
+        d="M15 32 C15 14, 26 4, 31 22 C34 35, 38 45, 43 26 C46 14, 49 7, 53 22 C56 32, 61 42, 66 20 C69 11, 73 18, 77 29 C83 45, 89 18, 96 28 C101 35, 109 40, 116 28 C123 16, 131 23, 136 35 C141 45, 131 52, 111 49 C91 45, 71 39, 51 42 C31 45, 21 39, 10 35"
+        stroke="#111827"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path d="M42 28 C56 26, 82 23, 108 26" stroke="#111827" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
@@ -39,7 +39,7 @@ const INDO_MONTHS = [
   'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
 ];
 
-const emptySubscribe = () => () => {};
+const emptySubscribe = () => () => { };
 
 function getClientTodayString() {
   const d = new Date();
@@ -63,7 +63,8 @@ const TEMPLATES = {
     defaultEmployee: '______',
     startDate: '15 December 2026',
     normalPrice: 'Rp16.000.000',
-    promoPrice: 'Rp14.500.000 (harga khusus early bird)',
+    promoPrice: 'Rp14.500.000',
+    additionalNote: '(harga khusus early bird)',
     format: 'Hybrid (online dan 2 sesi on-campus di Institut Teknologi Bandung)',
     onlineSchedule: 'Selasa & Kamis, pukul 19.30–21.30 WIB',
     certification: 'Institut Teknologi Bandung (ITB)',
@@ -84,7 +85,8 @@ const TEMPLATES = {
     defaultEmployee: 'Pak Hendra Permana',
     startDate: '30 October 2026',
     normalPrice: 'Rp15.000.000',
-    promoPrice: 'Rp13.500.000 per peserta (kuota terbatas diskon early bird)',
+    promoPrice: 'Rp13.500.000 per peserta',
+    additionalNote: '(kuota terbatas diskon early bird)',
     format: 'Hybrid (online dan 2 sesi on-campus di Binus Kemanggisan)',
     onlineSchedule: 'Senin, Selasa & Kamis, pukul 19.30–21.30 WIB',
     certification: 'BINUS University',
@@ -108,9 +110,7 @@ export default function SuratPenawaranGenerator() {
   const startDateId = useId();
   const normalPriceId = useId();
   const promoPriceId = useId();
-  const signerNameId = useId();
-  const signerEmailId = useId();
-  const signerTitleId = useId();
+  const additionalNoteId = useId();
 
   // Template Type State (ITB vs BINUS)
   const [templateType, setTemplateType] = useState('itb');
@@ -118,9 +118,9 @@ export default function SuratPenawaranGenerator() {
   // 3 Parameter Utama sesuai instruksi user
   const [roleOption, setRoleOption] = useState('Management');
   const [customRole, setCustomRole] = useState('');
-  
+
   const [companyName, setCompanyName] = useState('PT Hatten Bali Tbk');
-  
+
   const [locationOption, setLocationOption] = useState('di tempat');
   const [customLocation, setCustomLocation] = useState('');
 
@@ -154,17 +154,48 @@ export default function SuratPenawaranGenerator() {
   const [letterSeq, setLetterSeq] = useState('06');
   const [startDate, setStartDate] = useState('15 December 2026');
   const [normalPrice, setNormalPrice] = useState('Rp16.000.000');
-  const [promoPrice, setPromoPrice] = useState('Rp14.500.000 (harga khusus early bird)');
-  
+  const [promoPrice, setPromoPrice] = useState('Rp14.500.000');
+  const [additionalNote, setAdditionalNote] = useState('');
+
   const [signerName, setSignerName] = useState('Pita Rini Fajrian Ramadhani');
   const [signerEmail, setSignerEmail] = useState('admission@revou.co');
   const [signerTitle, setSignerTitle] = useState('Admission Lead');
 
   // UI state
-  const [showHighlight, setShowHighlight] = useState(true);
   const [zoomScale, setZoomScale] = useState(0.88);
   const [showGdocsModal, setShowGdocsModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+
+  // Theme state: 'light' or 'dark'
+  const [theme, setTheme] = useState('light');
+
+  React.useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem('revou-theme');
+      if (savedTheme) {
+        setTheme(savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    try {
+      localStorage.setItem('revou-theme', nextTheme);
+      document.documentElement.setAttribute('data-theme', nextTheme);
+    } catch {
+      // ignore
+    }
+  };
 
   // Switch Template Handler
   const handleTemplateChange = (newType) => {
@@ -181,6 +212,7 @@ export default function SuratPenawaranGenerator() {
     setStartDate(tmpl.startDate);
     setNormalPrice(tmpl.normalPrice);
     setPromoPrice(tmpl.promoPrice);
+    setAdditionalNote(tmpl.additionalNote);
     setSignerName(tmpl.signerName);
     setSignerEmail(tmpl.signerEmail);
     setSignerTitle(tmpl.signerTitle);
@@ -192,6 +224,9 @@ export default function SuratPenawaranGenerator() {
   const effectiveLocation = locationOption === 'Custom' ? (customLocation.trim() || 'di tempat') : locationOption;
   const effectiveEmployee = employeeName.trim() || (templateType === 'binus' ? 'Pak Hendra Permana' : '______');
   const effectiveLetterNumber = `${(letterSeq || '01').trim()}/SP/ADM/${clientRomanMonth}/${clientYear}`;
+  const fullPromoPrice = additionalNote.trim()
+    ? `${promoPrice.trim()} ${additionalNote.trim()}`
+    : promoPrice.trim();
 
   const currentTemplate = TEMPLATES[templateType];
 
@@ -203,7 +238,6 @@ export default function SuratPenawaranGenerator() {
   // Reset to current template default
   const handleReset = () => {
     handleTemplateChange(templateType);
-    setShowHighlight(true);
   };
 
 
@@ -249,7 +283,7 @@ Detail Program:
 ● Format: ${currentTemplate.format}
 ● Sesi Online: ${currentTemplate.onlineSchedule}
 ● Sertifikasi: ${currentTemplate.certification}
-● Biaya Program: ${normalPrice} ${promoPrice}
+● Biaya Program: ${normalPrice} ${fullPromoPrice}
 
 Manfaat bagi Organisasi:
 ● Meningkatkan kapabilitas peserta dalam penerapan AI, analytics, dan automation.
@@ -262,6 +296,9 @@ Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bap
 
 Salam hormat,
 
+
+
+________________________
 ${signerName}
 ${signerEmail}
 ${signerTitle}
@@ -306,7 +343,7 @@ Detail Program:
 ● Format: ${currentTemplate.format}
 ● Sesi Online: ${currentTemplate.onlineSchedule}
 ● Sertifikasi: ${currentTemplate.certification}
-● Biaya Program: ${normalPrice} ${promoPrice}
+● Biaya Program: ${normalPrice} ${fullPromoPrice}
 
 Manfaat bagi Organisasi:
 ● Memperkuat kemampuan pengambilan keputusan berbasis data di level leadership
@@ -320,6 +357,9 @@ Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bap
 
 Salam hormat,
 
+
+
+________________________
 ${signerName}
 ${signerEmail}
 ${signerTitle}
@@ -344,7 +384,7 @@ RevoU (PT Revolusi Cita Edukasi)
     }
 
     const plainText = generatePlainText();
-    
+
     // Google Docs exported document is clean without yellow highlights (highlights are only for on-screen preview)
     const highlightBg = '';
     const styledHtml = `
@@ -384,9 +424,9 @@ RevoU (PT Revolusi Cita Edukasi)
             <td style="width: 76px; vertical-align: top; border: none; padding: 1px 0;">Perihal</td>
             <td style="width: 16px; vertical-align: top; border: none; padding: 1px 0;">:</td>
             <td style="vertical-align: top; border: none; padding: 1px 0;">
-              ${templateType === 'binus' 
-                ? 'Informasi Program Applied AI, Analytics &<br/>Automation (RevoU X BINUS)' 
-                : currentTemplate.subject}
+              ${templateType === 'binus'
+        ? 'Informasi Program Applied AI, Analytics &<br/>Automation (RevoU X BINUS)'
+        : currentTemplate.subject}
             </td>
           </tr>
         </table>
@@ -427,7 +467,7 @@ RevoU (PT Revolusi Cita Edukasi)
             <li style="margin-bottom: 3pt; font-size: 11pt;">Format: ${currentTemplate.format}</li>
             <li style="margin-bottom: 3pt; font-size: 11pt;">Sesi Online: ${currentTemplate.onlineSchedule}</li>
             <li style="margin-bottom: 3pt; font-size: 11pt;">Sertifikasi: ${currentTemplate.certification}</li>
-            <li style="margin-bottom: 3pt; font-size: 11pt;">Biaya Program: <span style="text-decoration: line-through; color: #4B5563;">${normalPrice}</span> <span style="${highlightBg}"><strong>${promoPrice}</strong></span></li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;">Biaya Program: <span style="text-decoration: line-through; color: #4B5563;">${normalPrice}</span> <span style="${highlightBg}"><strong>${fullPromoPrice}</strong></span></li>
           </ul>
           <p style="font-weight: bold; margin-top: 10pt; margin-bottom: 4pt; font-size: 11pt;">Manfaat bagi Organisasi:</p>
           <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
@@ -466,7 +506,7 @@ RevoU (PT Revolusi Cita Edukasi)
             <li style="margin-bottom: 3pt; font-size: 11pt;">Format: ${currentTemplate.format}</li>
             <li style="margin-bottom: 3pt; font-size: 11pt;">Sesi Online: ${currentTemplate.onlineSchedule}</li>
             <li style="margin-bottom: 3pt; font-size: 11pt;">Sertifikasi: ${currentTemplate.certification}</li>
-            <li style="margin-bottom: 3pt; font-size: 11pt;">Biaya Program: <span style="text-decoration: line-through; color: #4B5563;">${normalPrice}</span> <span style="${highlightBg}"><strong>${promoPrice}</strong></span></li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;">Biaya Program: <span style="text-decoration: line-through; color: #4B5563;">${normalPrice}</span> <span style="${highlightBg}"><strong>${fullPromoPrice}</strong></span></li>
           </ul>
           <p style="font-weight: bold; margin-top: 10pt; margin-bottom: 4pt; font-size: 11pt;">Manfaat bagi Organisasi:</p>
           <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
@@ -485,8 +525,11 @@ RevoU (PT Revolusi Cita Edukasi)
 
         <div style="margin-top: 18pt; font-size: 11pt; line-height: 1.45;">
           <p style="margin-bottom: 36pt;">Salam hormat,</p>
-          <p style="margin-bottom: 2pt;"><u><strong>${signerName}</strong></u></p>
-          <p style="margin-bottom: 2pt; color: #1D4ED8;"><u>${signerEmail}</u></p>
+          <div style="display: inline-block;">
+            <div style="border-bottom: 1px solid #111827; margin-bottom: 6px;"></div>
+            <p style="margin-bottom: 2pt;"><strong>${signerName}</strong></p>
+          </div>
+          <p style="margin-bottom: 2pt;"><a href="mailto:${signerEmail}" style="color: #1D4ED8; text-decoration: underline;">${signerEmail}</a></p>
           <p style="margin-bottom: 2pt;">${signerTitle}</p>
           <p style="margin-bottom: 0;">RevoU (PT Revolusi Cita Edukasi)</p>
         </div>
@@ -520,20 +563,21 @@ RevoU (PT Revolusi Cita Edukasi)
   // Direct download in authentic Microsoft Word .DOCX format with pixel-perfect alignment
   const handleDownloadDocx = async () => {
     try {
-      const { 
-        Document, 
-        Packer, 
-        Paragraph, 
-        TextRun, 
-        AlignmentType, 
-        ImageRun, 
-        Table, 
-        TableRow, 
-        TableCell, 
-        BorderStyle, 
+      const {
+        Document,
+        Packer,
+        Paragraph,
+        TextRun,
+        AlignmentType,
+        ImageRun,
+        Table,
+        TableRow,
+        TableCell,
+        BorderStyle,
         WidthType,
         PageBreak,
-        Header
+        Header,
+        ExternalHyperlink
       } = await import('docx');
 
       let logoBuffer = null;
@@ -738,8 +782,8 @@ RevoU (PT Revolusi Cita Edukasi)
           alignment: AlignmentType.RIGHT,
           spacing: { before: 80, after: 180, line: 260 },
           children: [
-            new TextRun({ 
-              text: letterDate, 
+            new TextRun({
+              text: letterDate,
               size: 22,
             }),
           ],
@@ -754,9 +798,9 @@ RevoU (PT Revolusi Cita Edukasi)
         new Paragraph({
           spacing: { after: 30, line: 260 },
           children: [
-            new TextRun({ 
-              text: effectiveRole, 
-              bold: true, 
+            new TextRun({
+              text: effectiveRole,
+              bold: true,
               size: 22,
             }),
           ],
@@ -764,9 +808,9 @@ RevoU (PT Revolusi Cita Edukasi)
         new Paragraph({
           spacing: { after: 30, line: 260 },
           children: [
-            new TextRun({ 
-              text: effectiveCompany, 
-              bold: true, 
+            new TextRun({
+              text: effectiveCompany,
+              bold: true,
               size: 22,
             }),
           ],
@@ -774,8 +818,8 @@ RevoU (PT Revolusi Cita Edukasi)
         new Paragraph({
           spacing: { after: 260, line: 260 },
           children: [
-            new TextRun({ 
-              text: effectiveLocation, 
+            new TextRun({
+              text: effectiveLocation,
               size: 22,
             }),
           ],
@@ -814,15 +858,15 @@ RevoU (PT Revolusi Cita Edukasi)
               new TextRun({ text: 'Sejalan dengan semakin pentingnya pemanfaatan data, kecerdasan artifisial (AI), dan otomatisasi dalam meningkatkan efektivitas pengambilan keputusan serta produktivitas organisasi, kami dengan senang hati menawarkan ', size: 22 }),
               new TextRun({ text: 'program pengembangan kompetensi', bold: true, size: 22 }),
               new TextRun({ text: ' untuk dipertimbangkan oleh ', size: 22 }),
-              new TextRun({ 
-                text: effectiveCompany, 
-                bold: true, 
+              new TextRun({
+                text: effectiveCompany,
+                bold: true,
                 size: 22,
               }),
               new TextRun({ text: ' bagi pengembangan kompetensi karyawan Bapak/Ibu: ', size: 22 }),
-              new TextRun({ 
-                text: effectiveEmployee, 
-                bold: true, 
+              new TextRun({
+                text: effectiveEmployee,
+                bold: true,
                 size: 22,
               }),
               new TextRun({ text: '.', size: 22 }),
@@ -863,8 +907,8 @@ RevoU (PT Revolusi Cita Edukasi)
               new TextRun({ text: 'Selama program berlangsung, peserta akan:', size: 22 }),
             ],
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
             children: [
@@ -873,10 +917,10 @@ RevoU (PT Revolusi Cita Edukasi)
               new TextRun({ text: ', dan ', size: 22 }),
               new TextRun({ text: 'text processing', italics: true, size: 22 }),
               new TextRun({ text: '.', size: 22 }),
-            ] 
+            ]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
             children: [
@@ -887,78 +931,78 @@ RevoU (PT Revolusi Cita Edukasi)
               new TextRun({ text: ' kepada ', size: 22 }),
               new TextRun({ text: 'stakeholder', italics: true, size: 22 }),
               new TextRun({ text: '.', size: 22 }),
-            ] 
+            ]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
             children: [
               new TextRun({ text: 'Mengembangkan solusi berbasis AI dan ', size: 22 }),
               new TextRun({ text: 'analytics', italics: true, size: 22 }),
               new TextRun({ text: ' dengan mengangkat langsung kasus bisnis nyata di perusahaan.', size: 22 }),
-            ] 
+            ]
           }),
 
           // PAGE 2: Clean Page Break (Header is automatically supplied by section Header)
           new Paragraph({ children: [new PageBreak()] }),
 
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { before: 80, after: 120, line: 276 },
-            children: [new TextRun({ text: 'Mempresentasikan solusi secara efektif kepada stakeholder bisnis maupun tim teknis.', size: 22 })] 
+            children: [new TextRun({ text: 'Mempresentasikan solusi secara efektif kepada stakeholder bisnis maupun tim teknis.', size: 22 })]
           }),
-          new Paragraph({ 
+          new Paragraph({
             spacing: { before: 100, after: 60, line: 276 },
-            children: [new TextRun({ text: 'Detail Program:', bold: true, size: 22 })] 
+            children: [new TextRun({ text: 'Detail Program:', bold: true, size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
             children: [
               new TextRun({ text: 'Durasi: 12 minggu, mulai ', size: 22 }),
-              new TextRun({ 
-                text: startDate, 
+              new TextRun({
+                text: startDate,
                 size: 22,
               }),
-            ] 
+            ]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: `Format: ${currentTemplate.format}`, size: 22 })] 
+            children: [new TextRun({ text: `Format: ${currentTemplate.format}`, size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: `Sesi Online: ${currentTemplate.onlineSchedule}`, size: 22 })] 
+            children: [new TextRun({ text: `Sesi Online: ${currentTemplate.onlineSchedule}`, size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: `Sertifikasi: ${currentTemplate.certification}`, size: 22 })] 
+            children: [new TextRun({ text: `Sertifikasi: ${currentTemplate.certification}`, size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             spacing: { after: 120, line: 276 },
             children: [
-              new TextRun({ text: `Biaya Program: `, size: 22 }), 
-              new TextRun({ text: normalPrice, strike: true, size: 22, color: '4B5563' }), 
+              new TextRun({ text: `Biaya Program: `, size: 22 }),
+              new TextRun({ text: normalPrice, strike: true, size: 22, color: '4B5563' }),
               new TextRun({ text: ` ` }),
-              new TextRun({ 
-                text: promoPrice, 
-                bold: true, 
+              new TextRun({
+                text: fullPromoPrice,
+                bold: true,
                 size: 22,
               })
-            ] 
+            ]
           }),
-          new Paragraph({ 
+          new Paragraph({
             spacing: { before: 100, after: 60, line: 276 },
-            children: [new TextRun({ text: 'Manfaat bagi Organisasi:', bold: true, size: 22 })] 
+            children: [new TextRun({ text: 'Manfaat bagi Organisasi:', bold: true, size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
             children: [
@@ -967,23 +1011,23 @@ RevoU (PT Revolusi Cita Edukasi)
               new TextRun({ text: ', dan ', size: 22 }),
               new TextRun({ text: 'automation', italics: true, size: 22 }),
               new TextRun({ text: '.', size: 22 }),
-            ] 
+            ]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
             children: [
               new TextRun({ text: 'Meningkatkan produktivitas dan efisiensi kerja melalui penerapan AI dan ', size: 22 }),
               new TextRun({ text: 'workflow automation', italics: true, size: 22 }),
               new TextRun({ text: '.', size: 22 }),
-            ] 
+            ]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 120, line: 276 },
-            children: [new TextRun({ text: 'Mendorong pengembangan profesional dan penerapan solusi AI untuk kebutuhan bisnis secara nyata.', size: 22 })] 
+            children: [new TextRun({ text: 'Mendorong pengembangan profesional dan penerapan solusi AI untuk kebutuhan bisnis secara nyata.', size: 22 })]
           })
         );
       } else {
@@ -1007,15 +1051,15 @@ RevoU (PT Revolusi Cita Edukasi)
               new TextRun({ text: 'Sejalan dengan semakin pentingnya pemanfaatan data, kecerdasan artifisial (AI), dan otomatisasi dalam meningkatkan efektivitas pengambilan keputusan serta produktivitas organisasi, kami dengan senang hati menawarkan ', size: 22 }),
               new TextRun({ text: 'program pengembangan kompetensi', bold: true, size: 22 }),
               new TextRun({ text: ' untuk dipertimbangkan oleh ', size: 22 }),
-              new TextRun({ 
-                text: effectiveCompany, 
-                bold: true, 
+              new TextRun({
+                text: effectiveCompany,
+                bold: true,
                 size: 22,
               }),
               new TextRun({ text: ' bagi pengembangan kompetensi karyawan Bapak/Ibu : ', size: 22 }),
-              new TextRun({ 
-                text: effectiveEmployee, 
-                bold: true, 
+              new TextRun({
+                text: effectiveEmployee,
+                bold: true,
                 size: 22,
               }),
             ],
@@ -1043,107 +1087,107 @@ RevoU (PT Revolusi Cita Edukasi)
               new TextRun({ text: 'Selama program berlangsung, peserta akan:', size: 22 }),
             ],
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: 'Mengasah kemampuan pengambilan keputusan berbasis data dan AI dengan mengangkat langsung kasus bisnis nyata di perusahaan.', size: 22 })] 
+            children: [new TextRun({ text: 'Mengasah kemampuan pengambilan keputusan berbasis data dan AI dengan mengangkat langsung kasus bisnis nyata di perusahaan.', size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: 'Membangun AI assistant yang dapat mendukung proses pengambilan keputusan di internal perusahaan.', size: 22 })] 
+            children: [new TextRun({ text: 'Membangun AI assistant yang dapat mendukung proses pengambilan keputusan di internal perusahaan.', size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
             children: [
               new TextRun({ text: 'Menyusun ', size: 22 }),
               new TextRun({ text: 'decision playbook', italics: true, size: 22 }),
               new TextRun({ text: ' yang siap diimplementasikan setelah program selesai.', size: 22 }),
-            ] 
+            ]
           }),
-          new Paragraph({ 
+          new Paragraph({
             spacing: { before: 100, after: 60, line: 276 },
-            children: [new TextRun({ text: 'Detail Program:', bold: true, size: 22 })] 
+            children: [new TextRun({ text: 'Detail Program:', bold: true, size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
             children: [
               new TextRun({ text: `Durasi: 12 minggu, mulai `, size: 22 }),
-              new TextRun({ 
-                text: startDate, 
+              new TextRun({
+                text: startDate,
                 size: 22,
               }),
-            ] 
+            ]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: `Format: ${currentTemplate.format}`, size: 22 })] 
+            children: [new TextRun({ text: `Format: ${currentTemplate.format}`, size: 22 })]
           }),
 
           // PAGE 2: Clean Page Break (Header is automatically supplied by section Header)
           new Paragraph({ children: [new PageBreak()] }),
 
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             spacing: { before: 80, after: 40, line: 276 },
-            children: [new TextRun({ text: `Sesi Online: ${currentTemplate.onlineSchedule}`, size: 22 })] 
+            children: [new TextRun({ text: `Sesi Online: ${currentTemplate.onlineSchedule}`, size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: `Sertifikasi: ${currentTemplate.certification}`, size: 22 })] 
+            children: [new TextRun({ text: `Sertifikasi: ${currentTemplate.certification}`, size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             spacing: { after: 120, line: 276 },
             children: [
-              new TextRun({ text: `Biaya Program: `, size: 22 }), 
-              new TextRun({ text: normalPrice, strike: true, size: 22, color: '4B5563' }), 
+              new TextRun({ text: `Biaya Program: `, size: 22 }),
+              new TextRun({ text: normalPrice, strike: true, size: 22, color: '4B5563' }),
               new TextRun({ text: ` ` }),
-              new TextRun({ 
-                text: promoPrice, 
-                bold: true, 
+              new TextRun({
+                text: fullPromoPrice,
+                bold: true,
                 size: 22,
               })
-            ] 
+            ]
           }),
-          new Paragraph({ 
+          new Paragraph({
             spacing: { before: 100, after: 60, line: 276 },
-            children: [new TextRun({ text: 'Manfaat bagi Organisasi:', bold: true, size: 22 })] 
+            children: [new TextRun({ text: 'Manfaat bagi Organisasi:', bold: true, size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
             children: [
               new TextRun({ text: 'Memperkuat kemampuan pengambilan keputusan berbasis data di level ', size: 22 }),
               new TextRun({ text: 'leadership', italics: true, size: 22 }),
-            ] 
+            ]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
             children: [
               new TextRun({ text: 'Meningkatkan efisiensi operasional melalui ', size: 22 }),
               new TextRun({ text: 'workflow', italics: true, size: 22 }),
               new TextRun({ text: ' berbasis AI', size: 22 }),
-            ] 
+            ]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: 'Membangun kapabilitas internal untuk mendukung transformasi digital perusahaan', size: 22 })] 
+            children: [new TextRun({ text: 'Membangun kapabilitas internal untuk mendukung transformasi digital perusahaan', size: 22 })]
           }),
-          new Paragraph({ 
-            bullet: { level: 0 }, 
+          new Paragraph({
+            bullet: { level: 0 },
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 120, line: 276 },
             children: [
@@ -1152,7 +1196,7 @@ RevoU (PT Revolusi Cita Edukasi)
               new TextRun({ text: ' dan ', size: 22 }),
               new TextRun({ text: 'roadmap', italics: true, size: 22 }),
               new TextRun({ text: ' implementasi', size: 22 }),
-            ] 
+            ]
           })
         );
       }
@@ -1164,9 +1208,9 @@ RevoU (PT Revolusi Cita Edukasi)
           spacing: { before: 140, after: 140, line: 276 },
           children: [
             new TextRun({ text: 'Kami percaya program ini dapat memberikan nilai tambah bagi ', size: 22 }),
-            new TextRun({ 
-              text: effectiveCompany, 
-              bold: true, 
+            new TextRun({
+              text: effectiveCompany,
+              bold: true,
               size: 22,
             }),
             new TextRun({ text: ', khususnya dalam memperkuat kapabilitas sumber daya manusia dan mempersiapkan organisasi menghadapi kebutuhan bisnis yang semakin kompleks, ', size: 22 }),
@@ -1179,47 +1223,61 @@ RevoU (PT Revolusi Cita Edukasi)
           spacing: { after: 160, line: 276 },
           children: [
             new TextRun({ text: 'Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan ', size: 22 }),
-            new TextRun({ 
-              text: effectiveCompany, 
-              bold: true, 
+            new TextRun({
+              text: effectiveCompany,
+              bold: true,
               size: 22,
             }),
             new TextRun({ text: templateType === 'binus' ? ', dalam mendukung pengembangan kompetensi para pemimpin dan karyawan.' : ' dalam mendukung pengembangan kompetensi para pemimpin dan karyawan.', size: 22 }),
           ],
         }),
-        new Paragraph({ 
-          spacing: { before: 140, after: 80, line: 260 },
-          children: [new TextRun({ text: 'Salam hormat,', size: 22 })] 
+        new Paragraph({
+          spacing: { before: 140, after: 720, line: 260 },
+          children: [new TextRun({ text: 'Salam hormat,', size: 22 })]
         }),
-        new Paragraph({ 
-          spacing: { before: 360, after: 40, line: 240 },
+        new Paragraph({
+          spacing: { after: 60, line: 240 },
           children: [
-            new TextRun({ 
-              text: signerName, 
-              bold: true, 
+            new TextRun({
+              text: '________________________',
+              color: '111827',
+              size: 22
+            })
+          ]
+        }),
+        new Paragraph({
+          spacing: { after: 30, line: 240 },
+          children: [
+            new TextRun({
+              text: signerName,
+              bold: true,
               size: 22,
-              underline: {},
             })
-          ] 
+          ]
         }),
-        new Paragraph({ 
+        new Paragraph({
           spacing: { after: 30, line: 240 },
           children: [
-            new TextRun({ 
-              text: signerEmail, 
-              size: 22, 
-              color: '1D4ED8',
-              underline: {},
-            })
-          ] 
+            new ExternalHyperlink({
+              children: [
+                new TextRun({
+                  text: signerEmail,
+                  size: 22,
+                  color: '1D4ED8',
+                  underline: {},
+                }),
+              ],
+              link: `mailto:${signerEmail}`,
+            }),
+          ]
         }),
-        new Paragraph({ 
+        new Paragraph({
           spacing: { after: 30, line: 240 },
-          children: [new TextRun({ text: signerTitle, size: 22 })] 
+          children: [new TextRun({ text: signerTitle, size: 22 })]
         }),
-        new Paragraph({ 
+        new Paragraph({
           spacing: { after: 30, line: 240 },
-          children: [new TextRun({ text: 'RevoU (PT Revolusi Cita Edukasi)', size: 22 })] 
+          children: [new TextRun({ text: 'RevoU (PT Revolusi Cita Edukasi)', size: 22 })]
         })
       );
 
@@ -1278,24 +1336,34 @@ RevoU (PT Revolusi Cita Edukasi)
       {/* Top Application Bar */}
       <header className="app-header no-print">
         <div className="brand-wrapper">
-          <Image 
-            src="/revou-logo.png" 
-            alt="Logo RevoU" 
-            width={42} 
-            height={42} 
-            style={{ borderRadius: '50%', objectFit: 'contain', boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }} 
+          <Image
+            src="/revou-logo.png"
+            alt="Logo RevoU"
+            width={42}
+            height={42}
+            style={{ borderRadius: '50%', objectFit: 'contain', boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }}
             priority
           />
           <div className="brand-title-group">
             <h1>Generator Surat Penawaran RevoU</h1>
-            <p>Otomatisasi Dokumen Penawaran Program Enterprise (ITB &amp; BINUS)</p>
           </div>
         </div>
 
         <div className="header-actions">
-          <button 
+          <button
             type="button"
-            className="btn btn-secondary" 
+            className="btn-theme-toggle"
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap'}
+            aria-label="Toggle Theme"
+          >
+            <span className="theme-toggle-icon">{theme === 'dark' ? '☀️' : '🌙'}</span>
+            <span>{theme === 'dark' ? 'Mode Terang' : 'Mode Gelap'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-secondary"
             onClick={handlePrintPdf}
             title="Cetak atau simpan surat langsung sebagai PDF"
           >
@@ -1303,9 +1371,9 @@ RevoU (PT Revolusi Cita Edukasi)
             <span>Cetak / PDF</span>
           </button>
 
-          <button 
+          <button
             type="button"
-            className="btn btn-secondary" 
+            className="btn btn-secondary"
             onClick={handleDownloadDocx}
             title="Unduh file dokumen dalam format Microsoft Word (.docx)"
           >
@@ -1313,9 +1381,9 @@ RevoU (PT Revolusi Cita Edukasi)
             <span>Unduh .DOCX</span>
           </button>
 
-          <button 
+          <button
             type="button"
-            className="btn btn-gdocs" 
+            className="btn btn-gdocs"
             onClick={handleOpenGoogleDocs}
             title="Buka dokumen baru di Google Docs dan salin isi surat"
           >
@@ -1329,18 +1397,20 @@ RevoU (PT Revolusi Cita Edukasi)
       <div className="app-container">
         {/* Left Side: Form Controls */}
         <aside className="editor-sidebar no-print">
-          
+
           {/* Card 0: Dropdown Pemilihan Tipe Surat untuk AC */}
-          <div className="section-card" style={{ borderColor: '#2563EB', background: 'linear-gradient(180deg, #EFF6FF 0%, #FFFFFF 100%)' }}>
+          <div className="section-card university-card">
             <div className="section-header" style={{ marginBottom: '0.6rem' }}>
-              <div className="section-title" style={{ color: '#1E40AF' }}>
+              <div className="section-title">
                 <span>🎓</span>
                 <span>Pilih Tipe Surat (Kerjasama)</span>
               </div>
-              <span className="badge-tag" style={{ background: '#DBEAFE', color: '#1E40AF' }}>Untuk AC</span>
+              <span className={`program-indicator-pill ${templateType === 'itb' ? 'pill-itb' : 'pill-binus'}`}>
+                {templateType === 'itb' ? '🏛️ ITB Aktif' : '🏢 BINUS Aktif'}
+              </span>
             </div>
-            
-            <p style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '0.75rem' }}>
+
+            <p style={{ fontSize: '0.75rem', color: 'var(--revou-muted)', marginBottom: '0.75rem' }}>
               Pilih program kemitraan universitas yang ingin ditawarkan:
             </p>
 
@@ -1348,16 +1418,17 @@ RevoU (PT Revolusi Cita Edukasi)
               <label htmlFor={templateSelectId} className="form-label" style={{ fontWeight: 700 }}>
                 Program Universitas
               </label>
-              <select 
-                id={templateSelectId}
-                className="form-select"
-                value={templateType}
-                onChange={(e) => handleTemplateChange(e.target.value)}
-                style={{ borderColor: '#3B82F6', fontWeight: 600 }}
-              >
-                <option value="itb">🏛️ RevoU X ITB (Data-Driven &amp; AI Decision Making)</option>
-                <option value="binus">🏢 RevoU X BINUS (Applied AI, Analytics &amp; Automation)</option>
-              </select>
+              <div className="select-interactive-wrapper">
+                <select
+                  id={templateSelectId}
+                  className="form-select select-interactive"
+                  value={templateType}
+                  onChange={(e) => handleTemplateChange(e.target.value)}
+                >
+                  <option value="itb">🏛️ RevoU X ITB (Data-Driven &amp; AI Decision Making)</option>
+                  <option value="binus">🏢 RevoU X BINUS (Applied AI, Analytics &amp; Automation)</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -1377,16 +1448,18 @@ RevoU (PT Revolusi Cita Edukasi)
                 <span>1. Role di Perusahaan</span>
                 <span className="helper">Pilih atau Custom</span>
               </label>
-              <select 
-                id={roleSelectId}
-                className="form-select"
-                value={roleOption}
-                onChange={(e) => setRoleOption(e.target.value)}
-              >
-                <option value="Management">Management</option>
-                <option value="Tim HR/Learning">Tim HR/Learning</option>
-                <option value="Custom">Custom (Tulis Sendiri)</option>
-              </select>
+              <div className="select-interactive-wrapper">
+                <select
+                  id={roleSelectId}
+                  className="form-select select-interactive"
+                  value={roleOption}
+                  onChange={(e) => setRoleOption(e.target.value)}
+                >
+                  <option value="Management">Management</option>
+                  <option value="Tim HR/Learning">Tim HR/Learning</option>
+                  <option value="Custom">Custom (Tulis Sendiri)</option>
+                </select>
+              </div>
 
               {roleOption === 'Custom' && (
                 <div className="custom-input-wrapper">
@@ -1418,28 +1491,28 @@ RevoU (PT Revolusi Cita Edukasi)
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
               />
-              
+
               {/* Quick Presets based on template */}
               <div className="quick-presets">
                 <span style={{ fontSize: '0.7rem', color: '#64748B', alignSelf: 'center' }}>Contoh Cepat:</span>
                 {templateType === 'binus' ? (
                   <>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="preset-chip"
                       onClick={() => setCompanyName('PT Pegadaian Galeri Dua Empat')}
                     >
                       PT Pegadaian Galeri Dua Empat
                     </button>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="preset-chip"
                       onClick={() => setCompanyName('PT Telkom Indonesia (Persero) Tbk')}
                     >
                       Telkom
                     </button>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="preset-chip"
                       onClick={() => setCompanyName('PT Bank Mandiri (Persero) Tbk')}
                     >
@@ -1448,22 +1521,22 @@ RevoU (PT Revolusi Cita Edukasi)
                   </>
                 ) : (
                   <>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="preset-chip"
                       onClick={() => setCompanyName('PT Hatten Bali Tbk')}
                     >
                       PT Hatten Bali Tbk
                     </button>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="preset-chip"
                       onClick={() => setCompanyName('PT Bank Central Asia Tbk')}
                     >
                       BCA
                     </button>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="preset-chip"
                       onClick={() => setCompanyName('PT GoTo Gojek Tokopedia Tbk')}
                     >
@@ -1480,15 +1553,17 @@ RevoU (PT Revolusi Cita Edukasi)
                 <span>3. Lokasi</span>
                 <span className="helper">Pilih atau Custom</span>
               </label>
-              <select 
-                id={locationSelectId}
-                className="form-select"
-                value={locationOption}
-                onChange={(e) => setLocationOption(e.target.value)}
-              >
-                <option value="di tempat">di tempat</option>
-                <option value="Custom">Custom (Tulis Sendiri)</option>
-              </select>
+              <div className="select-interactive-wrapper">
+                <select
+                  id={locationSelectId}
+                  className="form-select select-interactive"
+                  value={locationOption}
+                  onChange={(e) => setLocationOption(e.target.value)}
+                >
+                  <option value="di tempat">di tempat</option>
+                  <option value="Custom">Custom (Tulis Sendiri)</option>
+                </select>
+              </div>
 
               {locationOption === 'Custom' && (
                 <div className="custom-input-wrapper">
@@ -1523,27 +1598,17 @@ RevoU (PT Revolusi Cita Edukasi)
             </div>
           </div>
 
-          {/* Toggle Highlight Kuning */}
-          <div className="toggle-row">
-            <div className="toggle-info">
-              <h4>Sorot Fitur Kuning (Highlight)</h4>
-              <p>Menandai bagian yang terisi dinamis sesuai contoh</p>
-            </div>
-            <label className="switch">
-              <input 
-                type="checkbox" 
-                checked={showHighlight}
-                onChange={(e) => setShowHighlight(e.target.checked)}
-              />
-              <span className="slider"></span>
-            </label>
-          </div>
 
           {/* Card 2: Pengaturan Tanggal, Nomor & Detail Surat (Accordion) */}
           <details className="accordion">
             <summary>
-              <span>⚙️ Tanggal, Nomor &amp; Detail Surat</span>
-              <span style={{ fontSize: '0.8rem', color: '#64748B' }}>▼</span>
+              <div className="accordion-summary-content">
+                <span>⚙️</span>
+                <span>Tanggal, Nomor &amp; Detail Surat</span>
+              </div>
+              <div className="accordion-arrow-badge">
+                <span className="accordion-chevron">▼</span>
+              </div>
             </summary>
             <div className="accordion-body">
               <div className="form-group">
@@ -1551,8 +1616,8 @@ RevoU (PT Revolusi Cita Edukasi)
                   <label htmlFor={letterDateId} className="form-label" style={{ marginBottom: 0 }}>
                     Tanggal Surat
                   </label>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={setTodayDate}
                     style={{ fontSize: '0.72rem', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
                   >
@@ -1594,7 +1659,7 @@ RevoU (PT Revolusi Cita Edukasi)
               </div>
 
               <div className="form-group">
-                <label htmlFor={normalPriceId} className="form-label">Biaya Normal (Dicoret)</label>
+                <label htmlFor={normalPriceId} className="form-label">Biaya I (Dicoret)</label>
                 <input
                   id={normalPriceId}
                   type="text"
@@ -1605,74 +1670,61 @@ RevoU (PT Revolusi Cita Edukasi)
               </div>
 
               <div className="form-group">
-                <label htmlFor={promoPriceId} className="form-label">Biaya Promo / Early Bird</label>
+                <label htmlFor={promoPriceId} className="form-label">
+                  <span>Biaya II</span>
+                  <span className="helper">Nominal promo</span>
+                </label>
                 <input
                   id={promoPriceId}
                   type="text"
                   className="form-input"
+                  placeholder="Contoh: Rp14.500.000"
                   value={promoPrice}
                   onChange={(e) => setPromoPrice(e.target.value)}
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor={signerNameId} className="form-label">Nama Penandatangan</label>
+                <label htmlFor={additionalNoteId} className="form-label">
+                  <span>Keterangan Tambahan</span>
+                  <span className="helper">Contoh: (harga khusus early bird)</span>
+                </label>
                 <input
-                  id={signerNameId}
+                  id={additionalNoteId}
                   type="text"
                   className="form-input"
-                  value={signerName}
-                  onChange={(e) => setSignerName(e.target.value)}
+                  placeholder="Contoh: (harga khusus early bird)"
+                  value={additionalNote}
+                  onChange={(e) => setAdditionalNote(e.target.value)}
                 />
-              </div>
 
-              <div className="form-group">
-                <label htmlFor={signerEmailId} className="form-label">Email Penandatangan</label>
-                <input
-                  id={signerEmailId}
-                  type="text"
-                  className="form-input"
-                  value={signerEmail}
-                  onChange={(e) => setSignerEmail(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor={signerTitleId} className="form-label">Jabatan Penandatangan</label>
-                <input
-                  id={signerTitleId}
-                  type="text"
-                  className="form-input"
-                  value={signerTitle}
-                  onChange={(e) => setSignerTitle(e.target.value)}
-                />
               </div>
             </div>
           </details>
 
           {/* Action Button: Output Google Docs, DOCX & PDF */}
           <div className="section-card" style={{ textAlign: 'center' }}>
-            <button 
-              type="button" 
-              className="btn btn-gdocs" 
+            <button
+              type="button"
+              className="btn btn-gdocs"
               style={{ width: '100%', padding: '0.75rem', fontSize: '0.95rem', marginBottom: '0.5rem' }}
               onClick={handleOpenGoogleDocs}
             >
               📄 Buka &amp; Ekspor ke Google Docs
             </button>
 
-            <button 
-              type="button" 
-              className="btn btn-secondary" 
+            <button
+              type="button"
+              className="btn btn-secondary"
               style={{ width: '100%', padding: '0.65rem', fontSize: '0.88rem', marginBottom: '0.5rem' }}
               onClick={handleDownloadDocx}
             >
               📥 Unduh Format .DOCX (Word)
             </button>
 
-            <button 
-              type="button" 
-              className="btn btn-secondary" 
+            <button
+              type="button"
+              className="btn btn-secondary"
               style={{ width: '100%', padding: '0.65rem', fontSize: '0.88rem' }}
               onClick={handlePrintPdf}
             >
@@ -1691,13 +1743,6 @@ RevoU (PT Revolusi Cita Edukasi)
             </div>
           </div>
 
-          {/* Tips Info Box */}
-          <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: '8px', padding: '0.85rem', fontSize: '0.76rem', color: '#1E40AF', lineHeight: '1.45' }}>
-            <strong style={{ display: 'block', marginBottom: '4px' }}>💡 Alur Output Google Docs:</strong>
-            1. Klik <strong>&quot;Buka &amp; Ekspor ke Google Docs&quot;</strong><br />
-            2. Tab Google Docs baru langsung terbuka otomatis.<br />
-            3. Tekan <kbd style={{ background: '#DBEAFE', padding: '1px 4px', borderRadius: '3px' }}>Ctrl + V</kbd> untuk menempel surat dengan layout rapi!
-          </div>
         </aside>
 
         {/* Right Side: Document Preview Area */}
@@ -1706,26 +1751,26 @@ RevoU (PT Revolusi Cita Edukasi)
           <div className="preview-toolbar no-print">
             <div className="preview-scale-controls">
               <span>Ukuran Tampilan:</span>
-              <button 
-                type="button" 
-                className="scale-btn" 
+              <button
+                type="button"
+                className="scale-btn"
                 onClick={() => setZoomScale(Math.max(0.6, zoomScale - 0.1))}
                 title="Perkecil"
               >
                 -
               </button>
               <span style={{ minWidth: '40px', textAlign: 'center' }}>{Math.round(zoomScale * 100)}%</span>
-              <button 
-                type="button" 
-                className="scale-btn" 
+              <button
+                type="button"
+                className="scale-btn"
                 onClick={() => setZoomScale(Math.min(1.2, zoomScale + 0.1))}
                 title="Perbesar"
               >
                 +
               </button>
-              <button 
-                type="button" 
-                className="scale-btn" 
+              <button
+                type="button"
+                className="scale-btn"
                 style={{ width: 'auto', padding: '0 8px', fontSize: '0.75rem' }}
                 onClick={() => setZoomScale(0.88)}
                 title="Reset zoom"
@@ -1740,17 +1785,13 @@ RevoU (PT Revolusi Cita Edukasi)
               <span style={{ fontWeight: 700, color: '#1E40AF' }}>{currentTemplate.name}</span>
               <span style={{ color: '#94A3B8' }}>•</span>
               <span>2 Halaman A4</span>
-              <span style={{ color: '#94A3B8' }}>•</span>
-              <span style={{ color: showHighlight ? '#CA8A04' : '#16A34A', fontWeight: 600 }}>
-                {showHighlight ? 'Highlight Kuning Aktif' : 'Tampilan Bersih'}
-              </span>
             </div>
           </div>
 
           {/* Printable Letter Sheets */}
-          <div 
+          <div
             id="printable-letter-container"
-            className="paper-container" 
+            className="paper-container"
             style={{ transform: `scale(${zoomScale})` }}
           >
             {/* ===================== HALAMAN 1 ===================== */}
@@ -1759,12 +1800,12 @@ RevoU (PT Revolusi Cita Edukasi)
               <article className="a4-sheet" id="page-1">
                 {/* Header */}
                 <header className="letter-header">
-                  <Image 
-                    src="/revou-logo.png" 
-                    alt="Logo RevoU" 
-                    width={86} 
-                    height={86} 
-                    style={{ objectFit: 'contain' }} 
+                  <Image
+                    src="/revou-logo.png"
+                    alt="Logo RevoU"
+                    width={86}
+                    height={86}
+                    style={{ objectFit: 'contain' }}
                     priority
                   />
 
@@ -1779,7 +1820,7 @@ RevoU (PT Revolusi Cita Edukasi)
                 {/* Date */}
                 <div className="letter-date-row">
                   <div className="letter-date">
-                    <HighlightSpan isHighlighted={showHighlight}>{letterDate}</HighlightSpan>
+                    <HighlightSpan>{letterDate}</HighlightSpan>
                   </div>
                 </div>
 
@@ -1789,7 +1830,7 @@ RevoU (PT Revolusi Cita Edukasi)
                     <div className="ref-label">Nomor</div>
                     <div className="ref-colon">:</div>
                     <div className="ref-content">
-                      <HighlightSpan isHighlighted={showHighlight}>{effectiveLetterNumber}</HighlightSpan>
+                      <HighlightSpan>{effectiveLetterNumber}</HighlightSpan>
                     </div>
                   </div>
                   <div className="ref-row">
@@ -1812,17 +1853,17 @@ RevoU (PT Revolusi Cita Edukasi)
                 <div className="letter-recipient-block">
                   <div className="recipient-title">Kepada Yth.</div>
                   <div className="recipient-role-company">
-                    <HighlightSpan isHighlighted={showHighlight}>
+                    <HighlightSpan>
                       {effectiveRole}
                     </HighlightSpan>
                   </div>
                   <div className="recipient-role-company">
-                    <HighlightSpan isHighlighted={showHighlight}>
+                    <HighlightSpan>
                       {effectiveCompany}
                     </HighlightSpan>
                   </div>
                   <div>
-                    <HighlightSpan isHighlighted={showHighlight}>{effectiveLocation}</HighlightSpan>
+                    <HighlightSpan>{effectiveLocation}</HighlightSpan>
                   </div>
                 </div>
 
@@ -1843,7 +1884,7 @@ RevoU (PT Revolusi Cita Edukasi)
                     </p>
 
                     <p className="letter-paragraph">
-                      Sejalan dengan semakin pentingnya pemanfaatan data, kecerdasan artifisial (AI), dan otomatisasi dalam meningkatkan efektivitas pengambilan keputusan serta produktivitas organisasi, kami dengan senang hati menawarkan <strong>program pengembangan kompetensi</strong> untuk dipertimbangkan oleh <HighlightSpan isHighlighted={showHighlight}><strong>{effectiveCompany}</strong></HighlightSpan> bagi pengembangan kompetensi karyawan Bapak/Ibu: <HighlightSpan isHighlighted={showHighlight}><strong>{effectiveEmployee}</strong></HighlightSpan>.
+                      Sejalan dengan semakin pentingnya pemanfaatan data, kecerdasan artifisial (AI), dan otomatisasi dalam meningkatkan efektivitas pengambilan keputusan serta produktivitas organisasi, kami dengan senang hati menawarkan <strong>program pengembangan kompetensi</strong> untuk dipertimbangkan oleh <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan> bagi pengembangan kompetensi karyawan Bapak/Ibu: <HighlightSpan><strong>{effectiveEmployee}</strong></HighlightSpan>.
                     </p>
 
                     <p className="letter-paragraph">
@@ -1877,7 +1918,7 @@ RevoU (PT Revolusi Cita Edukasi)
                     </p>
 
                     <p className="letter-paragraph">
-                      Sejalan dengan semakin pentingnya pemanfaatan data, kecerdasan artifisial (AI), dan otomatisasi dalam meningkatkan efektivitas pengambilan keputusan serta produktivitas organisasi, kami dengan senang hati menawarkan <strong>program pengembangan kompetensi</strong> untuk dipertimbangkan oleh <HighlightSpan isHighlighted={showHighlight}><strong>{effectiveCompany}</strong></HighlightSpan> bagi pengembangan kompetensi karyawan Bapak/Ibu : <HighlightSpan isHighlighted={showHighlight}><strong>{effectiveEmployee}</strong></HighlightSpan>
+                      Sejalan dengan semakin pentingnya pemanfaatan data, kecerdasan artifisial (AI), dan otomatisasi dalam meningkatkan efektivitas pengambilan keputusan serta produktivitas organisasi, kami dengan senang hati menawarkan <strong>program pengembangan kompetensi</strong> untuk dipertimbangkan oleh <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan> bagi pengembangan kompetensi karyawan Bapak/Ibu : <HighlightSpan><strong>{effectiveEmployee}</strong></HighlightSpan>
                     </p>
 
                     <p className="letter-paragraph">
@@ -1910,7 +1951,7 @@ RevoU (PT Revolusi Cita Edukasi)
                     </div>
                     <ul className="letter-list" style={{ marginBottom: 0 }}>
                       <li>
-                        Durasi: 12 minggu, mulai <HighlightSpan isHighlighted={showHighlight}>{startDate}</HighlightSpan>
+                        Durasi: 12 minggu, mulai <HighlightSpan>{startDate}</HighlightSpan>
                       </li>
                       <li>
                         Format: {currentTemplate.format}
@@ -1927,12 +1968,12 @@ RevoU (PT Revolusi Cita Edukasi)
               <article className="a4-sheet" id="page-2">
                 {/* Header (replicated on page 2) */}
                 <header className="letter-header">
-                  <Image 
-                    src="/revou-logo.png" 
-                    alt="Logo RevoU" 
-                    width={86} 
-                    height={86} 
-                    style={{ objectFit: 'contain' }} 
+                  <Image
+                    src="/revou-logo.png"
+                    alt="Logo RevoU"
+                    width={86}
+                    height={86}
+                    style={{ objectFit: 'contain' }}
                     priority
                   />
 
@@ -1959,7 +2000,7 @@ RevoU (PT Revolusi Cita Edukasi)
                     </div>
                     <ul className="letter-list" style={{ marginBottom: '14px' }}>
                       <li>
-                        Durasi: 12 minggu, mulai <HighlightSpan isHighlighted={showHighlight}>{startDate}</HighlightSpan>
+                        Durasi: 12 minggu, mulai <HighlightSpan>{startDate}</HighlightSpan>
                       </li>
                       <li>
                         Format: {currentTemplate.format}
@@ -1971,7 +2012,7 @@ RevoU (PT Revolusi Cita Edukasi)
                         Sertifikasi: {currentTemplate.certification}
                       </li>
                       <li>
-                        Biaya Program: <span className="price-strike">{normalPrice}</span> <HighlightSpan isHighlighted={showHighlight}>{promoPrice}</HighlightSpan>
+                        Biaya Program: <span className="price-strike">{normalPrice}</span> <HighlightSpan>{fullPromoPrice}</HighlightSpan>
                       </li>
                     </ul>
 
@@ -1992,11 +2033,11 @@ RevoU (PT Revolusi Cita Edukasi)
                     </ul>
 
                     <p className="letter-paragraph">
-                      Kami percaya program ini dapat memberikan nilai tambah bagi <HighlightSpan isHighlighted={showHighlight}><strong>{effectiveCompany}</strong></HighlightSpan>, khususnya dalam memperkuat kapabilitas sumber daya manusia dan mempersiapkan organisasi menghadapi kebutuhan bisnis yang semakin kompleks, <em>data-driven</em>, dan didukung oleh perkembangan teknologi AI.
+                      Kami percaya program ini dapat memberikan nilai tambah bagi <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan>, khususnya dalam memperkuat kapabilitas sumber daya manusia dan mempersiapkan organisasi menghadapi kebutuhan bisnis yang semakin kompleks, <em>data-driven</em>, dan didukung oleh perkembangan teknologi AI.
                     </p>
 
                     <p className="letter-paragraph">
-                      Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan <HighlightSpan isHighlighted={showHighlight}><strong>{effectiveCompany}</strong></HighlightSpan>, dalam mendukung pengembangan kompetensi para pemimpin dan karyawan.
+                      Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan>, dalam mendukung pengembangan kompetensi para pemimpin dan karyawan.
                     </p>
                   </>
                 ) : (
@@ -2010,7 +2051,7 @@ RevoU (PT Revolusi Cita Edukasi)
                         Sertifikasi: {currentTemplate.certification}
                       </li>
                       <li>
-                        Biaya Program: <span className="price-strike">{normalPrice}</span> <HighlightSpan isHighlighted={showHighlight}>{promoPrice}</HighlightSpan>
+                        Biaya Program: <span className="price-strike">{normalPrice}</span> <HighlightSpan>{fullPromoPrice}</HighlightSpan>
                       </li>
                     </ul>
 
@@ -2034,11 +2075,11 @@ RevoU (PT Revolusi Cita Edukasi)
                     </ul>
 
                     <p className="letter-paragraph">
-                      Kami percaya program ini dapat memberikan nilai tambah bagi <HighlightSpan isHighlighted={showHighlight}><strong>{effectiveCompany}</strong></HighlightSpan>, khususnya dalam memperkuat kapabilitas sumber daya manusia dan mempersiapkan organisasi menghadapi kebutuhan bisnis yang semakin kompleks, <em>data-driven</em>, dan didukung oleh perkembangan teknologi AI.
+                      Kami percaya program ini dapat memberikan nilai tambah bagi <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan>, khususnya dalam memperkuat kapabilitas sumber daya manusia dan mempersiapkan organisasi menghadapi kebutuhan bisnis yang semakin kompleks, <em>data-driven</em>, dan didukung oleh perkembangan teknologi AI.
                     </p>
 
                     <p className="letter-paragraph">
-                      Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan <HighlightSpan isHighlighted={showHighlight}><strong>{effectiveCompany}</strong></HighlightSpan> dalam mendukung pengembangan kompetensi para pemimpin dan karyawan.
+                      Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan> dalam mendukung pengembangan kompetensi para pemimpin dan karyawan.
                     </p>
                   </>
                 )}
@@ -2053,9 +2094,15 @@ RevoU (PT Revolusi Cita Edukasi)
                       <div className="signature-space"></div>
                     )}
                   </div>
-                  <div className="signoff-line"></div>
-                  <div className="signoff-name">{signerName}</div>
-                  <div className="signoff-email">{signerEmail}</div>
+                  <div className="signoff-name-wrapper">
+                    <div className="signoff-line"></div>
+                    <div className="signoff-name">{signerName}</div>
+                  </div>
+                  <div className="signoff-email">
+                    <a href={`mailto:${signerEmail}`} style={{ color: 'inherit', textDecoration: 'inherit' }}>
+                      {signerEmail}
+                    </a>
+                  </div>
                   <div className="signoff-title">{signerTitle}</div>
                   <div>RevoU (PT Revolusi Cita Edukasi)</div>
                 </div>
@@ -2103,8 +2150,8 @@ RevoU (PT Revolusi Cita Edukasi)
             </div>
 
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', flexWrap: 'wrap', alignItems: 'center' }}>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="btn btn-secondary"
                 onClick={handleDownloadDocx}
                 title="Unduh file dokumen Word format .docx"
@@ -2112,9 +2159,9 @@ RevoU (PT Revolusi Cita Edukasi)
                 📥 Unduh Format .DOCX
               </button>
 
-              <a 
-                href="https://docs.google.com/document/create" 
-                target="_blank" 
+              <a
+                href="https://docs.google.com/document/create"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-gdocs"
                 style={{ textDecoration: 'none' }}
@@ -2122,8 +2169,8 @@ RevoU (PT Revolusi Cita Edukasi)
                 📄 Buka Tab Google Docs
               </a>
 
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="btn btn-dark"
                 onClick={() => setShowGdocsModal(false)}
               >
