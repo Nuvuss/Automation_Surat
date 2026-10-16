@@ -85,8 +85,8 @@ const TEMPLATES = {
     defaultEmployee: 'Pak Hendra Permana',
     startDate: '30 October 2026',
     normalPrice: 'Rp15.000.000',
-    promoPrice: 'Rp13.500.000 per peserta',
-    additionalNote: '(kuota terbatas diskon early bird)',
+    promoPrice: 'Rp13.500.000',
+    additionalNote: '',
     format: 'Hybrid (online dan 2 sesi on-campus di Binus Kemanggisan)',
     onlineSchedule: 'Senin, Selasa & Kamis, pukul 19.30–21.30 WIB',
     certification: 'BINUS University',
@@ -1491,60 +1491,6 @@ RevoU (PT Revolusi Cita Edukasi)
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
               />
-
-              {/* Quick Presets based on template */}
-              <div className="quick-presets">
-                <span style={{ fontSize: '0.7rem', color: '#64748B', alignSelf: 'center' }}>Contoh Cepat:</span>
-                {templateType === 'binus' ? (
-                  <>
-                    <button
-                      type="button"
-                      className="preset-chip"
-                      onClick={() => setCompanyName('PT Pegadaian Galeri Dua Empat')}
-                    >
-                      PT Pegadaian Galeri Dua Empat
-                    </button>
-                    <button
-                      type="button"
-                      className="preset-chip"
-                      onClick={() => setCompanyName('PT Telkom Indonesia (Persero) Tbk')}
-                    >
-                      Telkom
-                    </button>
-                    <button
-                      type="button"
-                      className="preset-chip"
-                      onClick={() => setCompanyName('PT Bank Mandiri (Persero) Tbk')}
-                    >
-                      Mandiri
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      className="preset-chip"
-                      onClick={() => setCompanyName('PT Hatten Bali Tbk')}
-                    >
-                      PT Hatten Bali Tbk
-                    </button>
-                    <button
-                      type="button"
-                      className="preset-chip"
-                      onClick={() => setCompanyName('PT Bank Central Asia Tbk')}
-                    >
-                      BCA
-                    </button>
-                    <button
-                      type="button"
-                      className="preset-chip"
-                      onClick={() => setCompanyName('PT GoTo Gojek Tokopedia Tbk')}
-                    >
-                      GoTo
-                    </button>
-                  </>
-                )}
-              </div>
             </div>
 
             {/* 3. Lokasi */}
