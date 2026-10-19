@@ -1380,16 +1380,6 @@ RevoU (PT Revolusi Cita Edukasi)
             <span>📥</span>
             <span>Unduh .DOCX</span>
           </button>
-
-          <button
-            type="button"
-            className="btn btn-gdocs"
-            onClick={handleOpenGoogleDocs}
-            title="Buka dokumen baru di Google Docs dan salin isi surat"
-          >
-            <span style={{ fontSize: '1.1rem' }}>📄</span>
-            <span>Buka di Google Docs</span>
-          </button>
         </div>
       </header>
 
@@ -1545,120 +1535,106 @@ RevoU (PT Revolusi Cita Edukasi)
           </div>
 
 
-          {/* Card 2: Pengaturan Tanggal, Nomor & Detail Surat (Accordion) */}
-          <details className="accordion">
-            <summary>
-              <div className="accordion-summary-content">
+          {/* Card 2: Pengaturan Tanggal, Nomor & Detail Surat (Langsung Terbuka) */}
+          <div className="section-card">
+            <div className="section-header">
+              <div className="section-title">
                 <span>⚙️</span>
                 <span>Tanggal, Nomor &amp; Detail Surat</span>
               </div>
-              <div className="accordion-arrow-badge">
-                <span className="accordion-chevron">▼</span>
-              </div>
-            </summary>
-            <div className="accordion-body">
-              <div className="form-group">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                  <label htmlFor={letterDateId} className="form-label" style={{ marginBottom: 0 }}>
-                    Tanggal Surat
-                  </label>
-                  <button
-                    type="button"
-                    onClick={setTodayDate}
-                    style={{ fontSize: '0.72rem', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
-                  >
-                    Pakai Hari Ini
-                  </button>
-                </div>
-                <input
-                  id={letterDateId}
-                  type="text"
-                  className="form-input"
-                  value={letterDate}
-                  onChange={(e) => setCustomLetterDate(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor={letterSeqId} className="form-label">
-                  Nomor Urut Surat
-                </label>
-                <input
-                  id={letterSeqId}
-                  type="text"
-                  className="form-input"
-                  placeholder="Contoh: 06"
-                  value={letterSeq}
-                  onChange={(e) => setLetterSeq(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor={startDateId} className="form-label">Tanggal Mulai Program</label>
-                <input
-                  id={startDateId}
-                  type="text"
-                  className="form-input"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor={normalPriceId} className="form-label">Biaya I (Dicoret)</label>
-                <input
-                  id={normalPriceId}
-                  type="text"
-                  className="form-input"
-                  value={normalPrice}
-                  onChange={(e) => setNormalPrice(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor={promoPriceId} className="form-label">
-                  <span>Biaya II</span>
-                  <span className="helper">Nominal promo</span>
-                </label>
-                <input
-                  id={promoPriceId}
-                  type="text"
-                  className="form-input"
-                  placeholder="Contoh: Rp14.500.000"
-                  value={promoPrice}
-                  onChange={(e) => setPromoPrice(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor={additionalNoteId} className="form-label">
-                  <span>Keterangan Tambahan</span>
-                  <span className="helper">Contoh: (harga khusus early bird)</span>
-                </label>
-                <input
-                  id={additionalNoteId}
-                  type="text"
-                  className="form-input"
-                  placeholder="Contoh: (harga khusus early bird)"
-                  value={additionalNote}
-                  onChange={(e) => setAdditionalNote(e.target.value)}
-                />
-
-              </div>
             </div>
-          </details>
 
-          {/* Action Button: Output Google Docs, DOCX & PDF */}
+            <div className="form-group">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                <label htmlFor={letterDateId} className="form-label" style={{ marginBottom: 0 }}>
+                  Tanggal Surat
+                </label>
+                <button
+                  type="button"
+                  onClick={setTodayDate}
+                  style={{ fontSize: '0.72rem', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+                >
+                  Pakai Hari Ini
+                </button>
+              </div>
+              <input
+                id={letterDateId}
+                type="text"
+                className="form-input"
+                value={letterDate}
+                onChange={(e) => setCustomLetterDate(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor={letterSeqId} className="form-label">
+                Nomor Urut Surat
+              </label>
+              <input
+                id={letterSeqId}
+                type="text"
+                className="form-input"
+                placeholder="Contoh: 06"
+                value={letterSeq}
+                onChange={(e) => setLetterSeq(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor={startDateId} className="form-label">Tanggal Mulai Program</label>
+              <input
+                id={startDateId}
+                type="text"
+                className="form-input"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor={normalPriceId} className="form-label">Biaya I (Dicoret)</label>
+              <input
+                id={normalPriceId}
+                type="text"
+                className="form-input"
+                value={normalPrice}
+                onChange={(e) => setNormalPrice(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor={promoPriceId} className="form-label">
+                <span>Biaya II</span>
+                <span className="helper">Nominal promo</span>
+              </label>
+              <input
+                id={promoPriceId}
+                type="text"
+                className="form-input"
+                placeholder="Contoh: Rp14.500.000"
+                value={promoPrice}
+                onChange={(e) => setPromoPrice(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor={additionalNoteId} className="form-label">
+                <span>Keterangan Tambahan</span>
+                <span className="helper">Contoh: (harga khusus early bird)</span>
+              </label>
+              <input
+                id={additionalNoteId}
+                type="text"
+                className="form-input"
+                placeholder="Contoh: (harga khusus early bird)"
+                value={additionalNote}
+                onChange={(e) => setAdditionalNote(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Action Button: DOCX & PDF */}
           <div className="section-card" style={{ textAlign: 'center' }}>
-            <button
-              type="button"
-              className="btn btn-gdocs"
-              style={{ width: '100%', padding: '0.75rem', fontSize: '0.95rem', marginBottom: '0.5rem' }}
-              onClick={handleOpenGoogleDocs}
-            >
-              📄 Buka &amp; Ekspor ke Google Docs
-            </button>
-
             <button
               type="button"
               className="btn btn-secondary"
