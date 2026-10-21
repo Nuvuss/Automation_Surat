@@ -626,7 +626,7 @@ RevoU (PT Revolusi Cita Edukasi)
         </div>
 
         <p style="margin-bottom: 16pt; font-size: 11pt; line-height: 1.45;">Bapak/Ibu yang kami hormati,</p>
-        <p style="margin-bottom: 14pt; font-size: 11pt; line-height: 1.45;">Semoga Bapak/Ibu dalam keadaan sehat dan baik.</p>
+        ${templateType !== 'itb_ds' ? `<p style="margin-bottom: 14pt; font-size: 11pt; line-height: 1.45;">Semoga Bapak/Ibu dalam keadaan sehat dan baik.</p>` : ''}
 
         ${templateType === 'itb_ds' ? `
           <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
@@ -641,31 +641,30 @@ RevoU (PT Revolusi Cita Edukasi)
           <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
             <strong>Program Applied Data Science with AI (RevoU X ITB)</strong> dirancang bagi profesional yang telah memiliki dasar analitik data dan ingin mengembangkan kemampuan lebih lanjut, mulai dari <em>predictive modelling</em>, pemanfaatan AI dalam proses analisis dan pengembangan solusi, hingga membangun <em>data products</em> yang dapat digunakan untuk mendukung kebutuhan bisnis.
           </p>
-          <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
-            Melalui program ini, peserta tidak hanya mempelajari konsep, tetapi juga menerapkannya pada permasalahan nyata dari pekerjaan atau organisasi masing-masing.
+          <p style="text-align: justify; margin-bottom: 4pt; font-size: 11pt; line-height: 1.45;">
+            Melalui program ini, peserta tidak hanya mempelajari konsep, tetapi juga menerapkannya pada permasalahan nyata dari pekerjaan atau organisasi masing-masing. Selama program berlangsung, peserta akan:
           </p>
-          <p style="margin-bottom: 4pt; font-size: 11pt;">Selama program berlangsung, peserta akan:</p>
           <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
-            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Mengembangkan kemampuan dalam <em>predictive modelling</em> dan validasi model untuk menghasilkan <em>insight</em> yang dapat dipercaya.</li>
-            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Memanfaatkan AI dan AI <em>coding agents</em> untuk mempercepat proses analisis dan pengembangan solusi data.</li>
-            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Membangun <em>AI-enabled data product</em> berdasarkan permasalahan atau keputusan nyata dari pekerjaan peserta.</li>
-            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Mempelajari proses monitoring, testing, reproducibility, dan responsible AI governance untuk memastikan solusi dapat digunakan secara berkelanjutan.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Mengembangkan kemampuan dalam <strong>predictive modelling</strong> dan validasi model untuk menghasilkan insight yang dapat dipercaya.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Memanfaatkan <strong>AI dan AI coding agents</strong> untuk mempercepat proses analisis dan pengembangan solusi data.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Membangun <strong>AI-enabled data product</strong> berdasarkan permasalahan atau keputusan nyata dari pekerjaan peserta.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Mempelajari proses <strong>monitoring, testing, reproducibility, dan responsible AI governance</strong> untuk memastikan solusi dapat digunakan secara berkelanjutan.</li>
             <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Mempresentasikan dan mempertahankan hasil <em>capstone project</em> di hadapan panel praktisi industri.</li>
           </ul>
           <p style="font-weight: bold; margin-top: 10pt; margin-bottom: 4pt; font-size: 11pt;">Detail Program:</p>
           <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
-            <li style="margin-bottom: 3pt; font-size: 11pt;">Durasi: 13 minggu, mulai <span style="${highlightBg}">${startDate}</span></li>
-            <li style="margin-bottom: 3pt; font-size: 11pt;">Format: ${currentTemplate.format}</li>
-            <li style="margin-bottom: 3pt; font-size: 11pt;">Sesi Online: ${currentTemplate.onlineSchedule}</li>
-            <li style="margin-bottom: 3pt; font-size: 11pt;">Sertifikasi: ${currentTemplate.certification}</li>
-            <li style="margin-bottom: 3pt; font-size: 11pt;">Biaya Program: <span style="text-decoration: line-through; color: #4B5563;">${normalPrice}</span> <span style="${highlightBg}"><strong>${fullPromoPrice}</strong></span></li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Durasi:</strong> 13 minggu, mulai <span style="${highlightBg}">${startDate}</span></li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Format:</strong> ${currentTemplate.format}</li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Sesi Online:</strong> ${currentTemplate.onlineSchedule}</li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Sertifikasi:</strong> ${currentTemplate.certification}</li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Biaya Program:</strong> <span style="text-decoration: line-through; color: #4B5563;">${normalPrice}</span> <span style="${highlightBg}"><strong>${fullPromoPrice}</strong></span></li>
           </ul>
           <p style="font-weight: bold; margin-top: 10pt; margin-bottom: 4pt; font-size: 11pt;">Manfaat bagi Organisasi:</p>
           <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
-            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Memperkuat kapabilitas <em>data science</em> dan <em>predictive analytics</em> di internal perusahaan.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Memperkuat kapabilitas <strong>data science dan predictive analytics</strong> di internal perusahaan.</li>
             <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Meningkatkan kemampuan karyawan dalam menerjemahkan permasalahan bisnis menjadi solusi berbasis data dan AI.</li>
             <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Mendorong pemanfaatan AI untuk meningkatkan efisiensi proses analisis dan pengembangan solusi.</li>
-            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Menghasilkan <em>data product</em> yang aplikatif berdasarkan permasalahan nyata di lingkungan kerja.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Menghasilkan <strong>data product yang aplikatif</strong> berdasarkan permasalahan nyata di lingkungan kerja.</li>
           </ul>
           <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
             Kami percaya program <strong>Applied Data Science with AI (RevoU X ITB)</strong> dapat memberikan nilai tambah bagi <span style="${highlightBg}"><strong>${effectiveCompany}</strong></span>, khususnya dalam memperkuat kapabilitas sumber daya manusia dan mempersiapkan organisasi menghadapi kebutuhan bisnis yang semakin <em>data-driven</em> serta perkembangan teknologi AI.
@@ -1104,12 +1103,14 @@ RevoU (PT Revolusi Cita Edukasi)
             new TextRun({ text: 'Bapak/Ibu yang kami hormati,', size: 22 }),
           ],
         }),
-        new Paragraph({
-          spacing: { after: 200, line: 276 },
-          children: [
-            new TextRun({ text: 'Semoga Bapak/Ibu dalam keadaan sehat dan baik.', size: 22 }),
-          ],
-        })
+        ...(templateType !== 'itb_ds' ? [
+          new Paragraph({
+            spacing: { after: 200, line: 276 },
+            children: [
+              new TextRun({ text: 'Semoga Bapak/Ibu dalam keadaan sehat dan baik.', size: 22 }),
+            ],
+          })
+        ] : []),
       );
 
       if (templateType === 'itb_ds') {
@@ -1136,8 +1137,8 @@ RevoU (PT Revolusi Cita Edukasi)
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 160, line: 276 },
             children: [
-              new TextRun({ text: 'Dengan senang hati kami menawarkan program pengembangan kompetensi ', size: 22 }),
-              new TextRun({ text: 'Applied Data Science with AI (RevoU X ITB)', bold: true, size: 22 }),
+              new TextRun({ text: 'Dengan senang hati kami menawarkan ', size: 22 }),
+              new TextRun({ text: 'program pengembangan kompetensi Applied Data Science with AI (RevoU X ITB)', bold: true, size: 22 }),
               new TextRun({ text: ' untuk dipertimbangkan oleh ', size: 22 }),
               new TextRun({ text: effectiveCompany, bold: true, size: 22 }),
               new TextRun({ text: ' bagi pengembangan kompetensi karyawan Bapak/Ibu: ', size: 22 }),
@@ -1170,10 +1171,8 @@ RevoU (PT Revolusi Cita Edukasi)
             spacing: { after: 40, line: 276 },
             children: [
               new TextRun({ text: 'Mengembangkan kemampuan dalam ', size: 22 }),
-              new TextRun({ text: 'predictive modelling', italics: true, size: 22 }),
-              new TextRun({ text: ' dan validasi model untuk menghasilkan ', size: 22 }),
-              new TextRun({ text: 'insight', italics: true, size: 22 }),
-              new TextRun({ text: ' yang dapat dipercaya.', size: 22 }),
+              new TextRun({ text: 'predictive modelling', bold: true, size: 22 }),
+              new TextRun({ text: ' dan validasi model untuk menghasilkan insight yang dapat dipercaya.', size: 22 }),
             ]
           }),
           new Paragraph({
@@ -1181,8 +1180,8 @@ RevoU (PT Revolusi Cita Edukasi)
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
             children: [
-              new TextRun({ text: 'Memanfaatkan AI dan AI ', size: 22 }),
-              new TextRun({ text: 'coding agents', italics: true, size: 22 }),
+              new TextRun({ text: 'Memanfaatkan ', size: 22 }),
+              new TextRun({ text: 'AI dan AI coding agents', bold: true, size: 22 }),
               new TextRun({ text: ' untuk mempercepat proses analisis dan pengembangan solusi data.', size: 22 }),
             ]
           }),
@@ -1192,7 +1191,7 @@ RevoU (PT Revolusi Cita Edukasi)
             spacing: { after: 40, line: 276 },
             children: [
               new TextRun({ text: 'Membangun ', size: 22 }),
-              new TextRun({ text: 'AI-enabled data product', italics: true, size: 22 }),
+              new TextRun({ text: 'AI-enabled data product', bold: true, size: 22 }),
               new TextRun({ text: ' berdasarkan permasalahan atau keputusan nyata dari pekerjaan peserta.', size: 22 }),
             ]
           }),
@@ -1201,7 +1200,9 @@ RevoU (PT Revolusi Cita Edukasi)
             alignment: AlignmentType.JUSTIFIED,
             spacing: { after: 40, line: 276 },
             children: [
-              new TextRun({ text: 'Mempelajari proses monitoring, testing, reproducibility, dan responsible AI governance untuk memastikan solusi dapat digunakan secara berkelanjutan.', size: 22 }),
+              new TextRun({ text: 'Mempelajari proses ', size: 22 }),
+              new TextRun({ text: 'monitoring, testing, reproducibility, dan responsible AI governance', bold: true, size: 22 }),
+              new TextRun({ text: ' untuk memastikan solusi dapat digunakan secara berkelanjutan.', size: 22 }),
             ]
           }),
           new Paragraph({
@@ -1226,28 +1227,41 @@ RevoU (PT Revolusi Cita Edukasi)
           new Paragraph({
             bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: 'Durasi: 13 minggu, mulai ', size: 22 }), new TextRun({ text: startDate, size: 22 })]
+            children: [
+              new TextRun({ text: 'Durasi: ', bold: true, size: 22 }),
+              new TextRun({ text: '13 minggu, mulai ', size: 22 }),
+              new TextRun({ text: startDate, size: 22 })
+            ]
           }),
           new Paragraph({
             bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: `Format: ${currentTemplate.format}`, size: 22 })]
+            children: [
+              new TextRun({ text: 'Format: ', bold: true, size: 22 }),
+              new TextRun({ text: currentTemplate.format, size: 22 })
+            ]
           }),
           new Paragraph({
             bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: `Sesi Online: ${currentTemplate.onlineSchedule}`, size: 22 })]
+            children: [
+              new TextRun({ text: 'Sesi Online: ', bold: true, size: 22 }),
+              new TextRun({ text: currentTemplate.onlineSchedule, size: 22 })
+            ]
           }),
           new Paragraph({
             bullet: { level: 0 },
             spacing: { after: 40, line: 276 },
-            children: [new TextRun({ text: `Sertifikasi: ${currentTemplate.certification}`, size: 22 })]
+            children: [
+              new TextRun({ text: 'Sertifikasi: ', bold: true, size: 22 }),
+              new TextRun({ text: currentTemplate.certification, size: 22 })
+            ]
           }),
           new Paragraph({
             bullet: { level: 0 },
             spacing: { after: 140, line: 276 },
             children: [
-              new TextRun({ text: 'Biaya Program: ', size: 22 }),
+              new TextRun({ text: 'Biaya Program: ', bold: true, size: 22 }),
               new TextRun({ text: normalPrice, strike: true, color: '4B5563', size: 22 }),
               new TextRun({ text: ' ', size: 22 }),
               new TextRun({ text: fullPromoPrice, bold: true, size: 22 }),
@@ -1263,9 +1277,7 @@ RevoU (PT Revolusi Cita Edukasi)
             spacing: { after: 40, line: 276 },
             children: [
               new TextRun({ text: 'Memperkuat kapabilitas ', size: 22 }),
-              new TextRun({ text: 'data science', italics: true, size: 22 }),
-              new TextRun({ text: ' dan ', size: 22 }),
-              new TextRun({ text: 'predictive analytics', italics: true, size: 22 }),
+              new TextRun({ text: 'data science dan predictive analytics', bold: true, size: 22 }),
               new TextRun({ text: ' di internal perusahaan.', size: 22 }),
             ]
           }),
@@ -1287,8 +1299,8 @@ RevoU (PT Revolusi Cita Edukasi)
             spacing: { after: 120, line: 276 },
             children: [
               new TextRun({ text: 'Menghasilkan ', size: 22 }),
-              new TextRun({ text: 'data product', italics: true, size: 22 }),
-              new TextRun({ text: ' yang aplikatif berdasarkan permasalahan nyata di lingkungan kerja.', size: 22 }),
+              new TextRun({ text: 'data product yang aplikatif', bold: true, size: 22 }),
+              new TextRun({ text: ' berdasarkan permasalahan nyata di lingkungan kerja.', size: 22 }),
             ]
           })
         );
@@ -2443,15 +2455,15 @@ RevoU (PT Revolusi Cita Edukasi)
 
                 {/* Recipient */}
                 <div className="letter-recipient-block">
-                  <div className="recipient-title">Kepada Yth.</div>
+                  <div className="recipient-title"><strong>Kepada Yth.</strong></div>
                   <div className="recipient-role-company">
                     <HighlightSpan>
-                      {effectiveRole}
+                      <strong>{effectiveRole}</strong>
                     </HighlightSpan>
                   </div>
                   <div className="recipient-role-company">
                     <HighlightSpan>
-                      {effectiveCompany}
+                      <strong>{effectiveCompany}</strong>
                     </HighlightSpan>
                   </div>
                   <div>
@@ -2465,9 +2477,11 @@ RevoU (PT Revolusi Cita Edukasi)
                 </div>
 
                 {/* Paragraphs */}
-                <p className="letter-paragraph">
-                  Semoga Bapak/Ibu dalam keadaan sehat dan baik.
-                </p>
+                {templateType !== 'itb_ds' && (
+                  <p className="letter-paragraph">
+                    Semoga Bapak/Ibu dalam keadaan sehat dan baik.
+                  </p>
+                )}
 
                 {templateType === 'itb_ds' ? (
                   <>
@@ -2493,16 +2507,16 @@ RevoU (PT Revolusi Cita Edukasi)
 
                     <ul className="letter-list">
                       <li>
-                        Mengembangkan kemampuan dalam <em>predictive modelling</em> dan validasi model untuk menghasilkan <em>insight</em> yang dapat dipercaya.
+                        Mengembangkan kemampuan dalam <strong>predictive modelling</strong> dan validasi model untuk menghasilkan insight yang dapat dipercaya.
                       </li>
                       <li>
-                        Memanfaatkan AI dan AI <em>coding agents</em> untuk mempercepat proses analisis dan pengembangan solusi data.
+                        Memanfaatkan <strong>AI dan AI coding agents</strong> untuk mempercepat proses analisis dan pengembangan solusi data.
                       </li>
                       <li>
-                        Membangun <em>AI-enabled data product</em> berdasarkan permasalahan atau keputusan nyata dari pekerjaan peserta.
+                        Membangun <strong>AI-enabled data product</strong> berdasarkan permasalahan atau keputusan nyata dari pekerjaan peserta.
                       </li>
                       <li>
-                        Mempelajari proses monitoring, testing, reproducibility, dan responsible AI governance untuk memastikan solusi dapat digunakan secara berkelanjutan.
+                        Mempelajari proses <strong>monitoring, testing, reproducibility, dan responsible AI governance</strong> untuk memastikan solusi dapat digunakan secara berkelanjutan.
                       </li>
                       <li>
                         Mempresentasikan dan mempertahankan hasil <em>capstone project</em> di hadapan panel praktisi industri.
@@ -2651,7 +2665,58 @@ RevoU (PT Revolusi Cita Edukasi)
                   </div>
                 </header>
 
-                {templateType === 'hr' ? (
+                {templateType === 'itb_ds' ? (
+                  <>
+                    {/* Detail Program for ITB Data Science */}
+                    <div className="section-subtitle">
+                      <strong>Detail Program:</strong>
+                    </div>
+                    <ul className="letter-list" style={{ marginBottom: '14px' }}>
+                      <li>
+                        <strong>Durasi:</strong> 13 minggu, mulai <HighlightSpan>{startDate}</HighlightSpan>
+                      </li>
+                      <li>
+                        <strong>Format:</strong> {currentTemplate.format}
+                      </li>
+                      <li>
+                        <strong>Sesi Online:</strong> {currentTemplate.onlineSchedule}
+                      </li>
+                      <li>
+                        <strong>Sertifikasi:</strong> {currentTemplate.certification}
+                      </li>
+                      <li>
+                        <strong>Biaya Program:</strong> <span className="price-strike">{normalPrice}</span> <HighlightSpan><strong>{fullPromoPrice}</strong></HighlightSpan>
+                      </li>
+                    </ul>
+
+                    {/* Manfaat bagi Organisasi */}
+                    <div className="section-subtitle">
+                      <strong>Manfaat bagi Organisasi:</strong>
+                    </div>
+                    <ul className="letter-list">
+                      <li>
+                        Memperkuat kapabilitas <strong>data science dan predictive analytics</strong> di internal perusahaan.
+                      </li>
+                      <li>
+                        Meningkatkan kemampuan karyawan dalam menerjemahkan permasalahan bisnis menjadi solusi berbasis data dan AI.
+                      </li>
+                      <li>
+                        Mendorong pemanfaatan AI untuk meningkatkan efisiensi proses analisis dan pengembangan solusi.
+                      </li>
+                      <li>
+                        Menghasilkan <strong>data product yang aplikatif</strong> berdasarkan permasalahan nyata di lingkungan kerja.
+                      </li>
+                    </ul>
+
+                    <p className="letter-paragraph">
+                      Kami percaya program <strong>Applied Data Science with AI (RevoU X ITB)</strong> dapat memberikan nilai tambah bagi <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan>, khususnya dalam memperkuat kapabilitas sumber daya manusia dan mempersiapkan organisasi menghadapi kebutuhan bisnis yang semakin <em>data-driven</em> serta perkembangan teknologi AI.
+                    </p>
+
+                    <p className="letter-paragraph">
+                      Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan> dalam mendukung pengembangan kompetensi karyawan dan kapabilitas data &amp; AI di organisasi.
+                    </p>
+                  </>
+                ) : templateType === 'hr' ? (
                   <>
                     {/* Detail Program for HR */}
                     <div className="section-subtitle">
