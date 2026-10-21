@@ -2296,7 +2296,6 @@ RevoU (PT Revolusi Cita Edukasi)
             <div className="form-group">
               <label htmlFor={promoPriceId} className="form-label">
                 <span>Biaya II</span>
-                <span className="helper">Nominal promo</span>
               </label>
               <input
                 id={promoPriceId}
