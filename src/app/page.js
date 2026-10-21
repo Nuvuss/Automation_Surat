@@ -49,11 +49,15 @@ function getClientTodayString() {
   return `Jakarta, ${day} ${monthName} ${year}`;
 }
 
-// Template definitions for ITB and BINUS
+// Template definitions for ITB, BINUS, and Strategic HR
 const TEMPLATES = {
   itb: {
     id: 'itb',
     name: 'RevoU X ITB',
+    badge: 'Aktif',
+    pillClass: 'pill-itb',
+    logo: '/revou-logo.png',
+    logoAlt: 'Logo RevoU',
     seqNumber: '06',
     programName: 'Program Data-Driven & AI-Enabled Decision Making for Leaders (RevoU X ITB)',
     subject: 'Informasi Program Data-Driven & AI Enabled Decision Making for Leaders (RevoU X ITB)',
@@ -62,11 +66,13 @@ const TEMPLATES = {
     defaultLocation: 'di tempat',
     defaultEmployee: '______',
     startDate: '15 December 2026',
+    duration: '12 minggu',
     normalPrice: 'Rp16.000.000',
     promoPrice: 'Rp14.500.000',
     additionalNote: '(harga khusus early bird)',
     format: 'Hybrid (online dan 2 sesi on-campus di Institut Teknologi Bandung)',
     onlineSchedule: 'Selasa & Kamis, pukul 19.30–21.30 WIB',
+    certLabel: 'Sertifikasi',
     certification: 'Institut Teknologi Bandung (ITB)',
     signerName: 'Pita Rini Fajrian Ramadhani',
     signerEmail: 'admission@revou.co',
@@ -76,6 +82,10 @@ const TEMPLATES = {
   binus: {
     id: 'binus',
     name: 'RevoU X BINUS',
+    badge: 'Aktif',
+    pillClass: 'pill-binus',
+    logo: '/revou-logo.png',
+    logoAlt: 'Logo RevoU',
     seqNumber: '14',
     programName: 'Program Applied AI, Analytics & Automation (RevoU X BINUS)',
     subject: 'Informasi Program Applied AI, Analytics & Automation (RevoU X BINUS)',
@@ -84,12 +94,42 @@ const TEMPLATES = {
     defaultLocation: 'di tempat',
     defaultEmployee: 'Pak Hendra Permana',
     startDate: '30 October 2026',
+    duration: '12 minggu',
     normalPrice: 'Rp15.000.000',
     promoPrice: 'Rp13.500.000',
     additionalNote: '',
     format: 'Hybrid (online dan 2 sesi on-campus di Binus Kemanggisan)',
     onlineSchedule: 'Senin, Selasa & Kamis, pukul 19.30–21.30 WIB',
+    certLabel: 'Sertifikasi',
     certification: 'BINUS University',
+    signerName: 'Pita Rini Fajrian Ramadhani',
+    signerEmail: 'pita@revou.co',
+    signerTitle: 'Admission lead',
+    hasSignatureImage: false,
+  },
+  hr: {
+    id: 'hr',
+    name: 'Strategic HR with AI',
+    badge: 'Aktif',
+    pillClass: 'pill-hr',
+    logo: '/revou-logo.png',
+    logoAlt: 'Logo RevoU',
+    seqNumber: '24',
+    programName: 'Program Strategic HR with AI (RevoU)',
+    subject: 'Informasi Program Strategic HR with AI RevoU',
+    defaultCompany: 'ELNI Digital Printing',
+    defaultRole: 'Management',
+    defaultLocation: 'di tempat',
+    defaultEmployee: 'Yudithia Aprilinda',
+    startDate: '2 November 2026',
+    duration: '15 minggu',
+    normalPrice: 'Rp 15,000,000',
+    promoPrice: 'Rp 13,500,000',
+    additionalNote: '(diskon khusus early bird)',
+    format: 'Full online via Zoom (seluruh sesi direkam dengan akses seumur hidup)',
+    onlineSchedule: 'Senin & Selasa, pukul 19.30–21.30 WIB (lecture); Jumat, pukul 19.30–21.30 WIB (Sprint Review Assignment di akhir setiap modul)',
+    certLabel: 'Sertifikat',
+    certification: 'Sertifikat penyelesaian program dari RevoU',
     signerName: 'Pita Rini Fajrian Ramadhani',
     signerEmail: 'pita@revou.co',
     signerTitle: 'Admission lead',
@@ -172,14 +212,11 @@ export default function SuratPenawaranGenerator() {
   React.useEffect(() => {
     try {
       const savedTheme = localStorage.getItem('revou-theme');
-      if (savedTheme) {
-        setTheme(savedTheme);
-        document.documentElement.setAttribute('data-theme', savedTheme);
-      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        setTheme('dark');
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'light');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', initialTheme);
+      if (initialTheme !== 'light') {
+        requestAnimationFrame(() => setTheme(initialTheme));
       }
     } catch {
       // ignore
@@ -222,7 +259,10 @@ export default function SuratPenawaranGenerator() {
   const effectiveRole = roleOption === 'Custom' ? (customRole.trim() || 'Management') : roleOption;
   const effectiveCompany = companyName.trim() || '[Nama Perusahaan]';
   const effectiveLocation = locationOption === 'Custom' ? (customLocation.trim() || 'di tempat') : locationOption;
-  const effectiveEmployee = employeeName.trim() || (templateType === 'binus' ? 'Pak Hendra Permana' : '______');
+  const effectiveEmployee = employeeName.trim() || (
+    templateType === 'binus' ? 'Pak Hendra Permana' :
+      templateType === 'hr' ? 'Yudithia Aprilinda' : '______'
+  );
   const effectiveLetterNumber = `${(letterSeq || '01').trim()}/SP/ADM/${clientRomanMonth}/${clientYear}`;
   const fullPromoPrice = additionalNote.trim()
     ? `${promoPrice.trim()} ${additionalNote.trim()}`
@@ -243,6 +283,69 @@ export default function SuratPenawaranGenerator() {
 
   // Generate complete plain text representation
   const generatePlainText = () => {
+    if (templateType === 'hr') {
+      return `PT REVOLUSI CITA EDUKASI
+Menara Rajawali, Ground Floor
+Jl. DR. Ide Anak Agung Gde Agung RT.5/RW.2, Kuningan
+Jakarta Selatan 12950
+
+${letterDate}
+
+Nomor : ${effectiveLetterNumber}
+Perihal : ${currentTemplate.subject}
+
+Kepada Yth.
+${effectiveRole}
+${effectiveCompany}
+${effectiveLocation}
+
+Bapak/Ibu yang kami hormati,
+
+Semoga Bapak/Ibu dalam keadaan sehat dan baik.
+
+Perkenalkan, kami dari RevoU (PT Revolusi Cita Edukasi), perusahaan ed-tech yang fokus pada pengembangan kompetensi profesional di bidang digital. RevoU menghadirkan program upskilling yang memadukan kurikulum berbasis praktik dengan kebutuhan nyata dunia industri.
+
+Sejalan dengan semakin pentingnya peran HR sebagai mitra strategis bisnis serta pemanfaatan kecerdasan artifisial (AI) dalam meningkatkan produktivitas organisasi, kami dengan senang hati menawarkan program pengembangan kompetensi untuk dipertimbangkan oleh ${effectiveCompany} bagi pengembangan kompetensi karyawan Bapak/Ibu: ${effectiveEmployee}.
+
+Program Strategic HR with AI (RevoU) dirancang untuk menjawab tantangan yang dihadapi fungsi HR modern. Banyak praktisi HR yang kuat di sisi eksekusi, namun belum dilibatkan dalam pengambilan keputusan strategis. Program ini membekali peserta dengan kemampuan HR Business Partner (HRBP) secara menyeluruh, mencakup Organisation Development, Talent Management, Performance Management, Compensation & Benefits, serta HR Operations & Compliance — dengan AI terintegrasi sebagai mitra kerja di sepanjang program.
+
+Melalui program ini, peserta tidak hanya mempelajari konsep, tetapi juga menerapkannya langsung melalui studi kasus dan project di setiap modul.
+
+Selama program berlangsung, peserta akan:
+● Mengasah kemampuan mendiagnosa situasi bisnis dan menerjemahkannya menjadi prioritas dan strategi HR yang tepat.
+● Mengerjakan project portofolio di setiap modul berbasis skenario perusahaan yang realistis (total 6 mini project + 1 capstone).
+● Menyusun rencana kerja HRBP 6 bulan (capstone) lengkap dengan AI-enabled solution yang berfungsi, dan mempresentasikannya di hadapan simulated leadership panel.
+
+Detail Program:
+● Durasi: ${currentTemplate.duration || '15 minggu'}, mulai ${startDate}
+● Format: ${currentTemplate.format}
+● Sesi Online: ${currentTemplate.onlineSchedule}
+● ${currentTemplate.certLabel || 'Sertifikat'}: ${currentTemplate.certification}
+● Biaya Program: ${normalPrice} ${fullPromoPrice}
+
+Manfaat bagi Organisasi:
+● Membangun kapabilitas HR strategis internal yang mampu menjadi mitra strategi bisnis, bukan sekadar menjalankan proses.
+● Satu program mencakup seluruh domain HR serta keterkaitannya, tanpa perlu pelatihan terpisah per fungsi.
+● Meningkatkan kesiapan AI fungsi HR, dengan pendekatan tool-agnostic sehingga relevan dengan tools apa pun yang digunakan perusahaan.
+● Menghasilkan output nyata: rencana kerja HRBP 6 bulan dan AI-enabled solution yang dapat langsung diadaptasi untuk kebutuhan perusahaan.
+● Meningkatkan retensi karyawan melalui investasi pada jalur pengembangan karir yang jelas.
+
+Kami percaya program ini dapat memberikan nilai tambah bagi ${effectiveCompany}, khususnya dalam memperkuat kapabilitas sumber daya manusia dan mempersiapkan fungsi HR menghadapi kebutuhan bisnis yang semakin strategis dan didukung oleh perkembangan teknologi AI.
+
+Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan ${effectiveCompany} dalam mendukung pengembangan kompetensi para karyawan.
+
+Salam hormat,
+
+
+
+__________________________
+${signerName}
+${signerEmail}
+${signerTitle}
+RevoU (PT Revolusi Cita Edukasi)
+`;
+    }
+
     if (templateType === 'binus') {
       return `PT REVOLUSI CITA EDUKASI
 Menara Rajawali, Ground Floor
@@ -367,13 +470,6 @@ RevoU (PT Revolusi Cita Edukasi)
 `;
   };
 
-  // Print / Save as PDF Handler
-  const handlePrintPdf = () => {
-    if (typeof window !== 'undefined') {
-      window.print();
-    }
-  };
-
   // Google Docs Export Handler with authentic table formatting for colons and justified paragraphs
   const handleOpenGoogleDocs = async () => {
     // Open new tab synchronously within click gesture to prevent browser popup blocker from blocking it
@@ -441,7 +537,48 @@ RevoU (PT Revolusi Cita Edukasi)
         <p style="margin-bottom: 16pt; font-size: 11pt; line-height: 1.45;">Bapak/Ibu yang kami hormati,</p>
         <p style="margin-bottom: 14pt; font-size: 11pt; line-height: 1.45;">Semoga Bapak/Ibu dalam keadaan sehat dan baik.</p>
 
-        ${templateType === 'binus' ? `
+        ${templateType === 'hr' ? `
+          <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+            Perkenalkan, kami dari RevoU (PT Revolusi Cita Edukasi), perusahaan <em>ed-tech</em> yang fokus pada pengembangan kompetensi profesional di bidang digital. RevoU menghadirkan program <em>upskilling</em> yang memadukan kurikulum berbasis praktik dengan kebutuhan nyata dunia industri.
+          </p>
+          <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+            Sejalan dengan semakin pentingnya peran HR sebagai mitra strategis bisnis serta pemanfaatan kecerdasan artifisial (AI) dalam meningkatkan produktivitas organisasi, kami dengan senang hati menawarkan <strong>program pengembangan kompetensi</strong> untuk dipertimbangkan oleh <span style="${highlightBg}"><strong>${effectiveCompany}</strong></span> bagi pengembangan kompetensi karyawan Bapak/Ibu: <span style="${highlightBg}"><strong>${effectiveEmployee}</strong></span>.
+          </p>
+          <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+            <strong>Program Strategic HR with AI (RevoU)</strong> dirancang untuk menjawab tantangan yang dihadapi fungsi HR modern. Banyak praktisi HR yang kuat di sisi eksekusi, namun belum dilibatkan dalam pengambilan keputusan strategis. Program ini membekali peserta dengan kemampuan HR Business Partner (HRBP) secara menyeluruh, mencakup <em>Organisation Development</em>, <em>Talent Management</em>, <em>Performance Management</em>, <em>Compensation &amp; Benefits</em>, serta <em>HR Operations &amp; Compliance</em> — dengan AI terintegrasi sebagai mitra kerja di sepanjang program.
+          </p>
+          <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+            Melalui program ini, peserta tidak hanya mempelajari konsep, tetapi juga menerapkannya langsung melalui studi kasus dan project di setiap modul.
+          </p>
+          <p style="margin-bottom: 4pt; font-size: 11pt;">Selama program berlangsung, peserta akan:</p>
+          <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Mengasah kemampuan mendiagnosa situasi bisnis dan menerjemahkannya menjadi prioritas dan strategi HR yang tepat.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Mengerjakan project portofolio di setiap modul berbasis skenario perusahaan yang realistis (total 6 mini project + 1 capstone).</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Menyusun rencana kerja HRBP 6 bulan (capstone) lengkap dengan AI-enabled solution yang berfungsi, dan mempresentasikannya di hadapan simulated leadership panel.</li>
+          </ul>
+          <p style="font-weight: bold; margin-top: 10pt; margin-bottom: 4pt; font-size: 11pt;">Detail Program:</p>
+          <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
+            <li style="margin-bottom: 3pt; font-size: 11pt;">Durasi: 15 minggu, mulai <span style="${highlightBg}">${startDate}</span></li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;">Format: ${currentTemplate.format}</li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;">Sesi Online: ${currentTemplate.onlineSchedule}</li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;">Sertifikat: ${currentTemplate.certification}</li>
+            <li style="margin-bottom: 3pt; font-size: 11pt;">Biaya Program: <span style="text-decoration: line-through; color: #4B5563;">${normalPrice}</span> <span style="${highlightBg}"><strong>${fullPromoPrice}</strong></span></li>
+          </ul>
+          <p style="font-weight: bold; margin-top: 10pt; margin-bottom: 4pt; font-size: 11pt;">Manfaat bagi Organisasi:</p>
+          <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Membangun kapabilitas HR strategis internal yang mampu menjadi mitra strategi bisnis, bukan sekadar menjalankan proses.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Satu program mencakup seluruh domain HR serta keterkaitannya, tanpa perlu pelatihan terpisah per fungsi.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Meningkatkan kesiapan AI fungsi HR, dengan pendekatan <em>tool-agnostic</em> sehingga relevan dengan tools apa pun yang digunakan perusahaan.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Menghasilkan output nyata: rencana kerja HRBP 6 bulan dan AI-enabled solution yang dapat langsung diadaptasi untuk kebutuhan perusahaan.</li>
+            <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Meningkatkan retensi karyawan melalui investasi pada jalur pengembangan karir yang jelas.</li>
+          </ul>
+          <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+            Kami percaya program ini dapat memberikan nilai tambah bagi <span style="${highlightBg}"><strong>${effectiveCompany}</strong></span>, khususnya dalam memperkuat kapabilitas sumber daya manusia dan mempersiapkan fungsi HR menghadapi kebutuhan bisnis yang semakin strategis dan didukung oleh perkembangan teknologi AI.
+          </p>
+          <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+            Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan <span style="${highlightBg}"><strong>${effectiveCompany}</strong></span> dalam mendukung pengembangan kompetensi para karyawan.
+          </p>
+        ` : templateType === 'binus' ? `
           <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
             Perkenalkan, kami dari RevoU (PT Revolusi Cita Edukasi), perusahaan <em>edtech</em> yang berfokus pada pengembangan kompetensi profesional di bidang digital. Melalui kolaborasi dengan universitas terkemuka di Indonesia, RevoU menghadirkan program <em>upskilling</em> yang memadukan pembelajaran akademis dengan praktik dan kebutuhan dunia industri.
           </p>
@@ -582,7 +719,8 @@ RevoU (PT Revolusi Cita Edukasi)
 
       let logoBuffer = null;
       try {
-        const resp = await fetch('/revou-logo.png');
+        const logoUrl = currentTemplate.logo || '/revou-logo.png';
+        const resp = await fetch(logoUrl);
         if (resp.ok) {
           logoBuffer = await resp.arrayBuffer();
         }
@@ -838,7 +976,191 @@ RevoU (PT Revolusi Cita Edukasi)
         })
       );
 
-      if (templateType === 'binus') {
+      if (templateType === 'hr') {
+        bodyParagraphs.push(
+          new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 160, line: 276 },
+            children: [
+              new TextRun({ text: 'Perkenalkan, kami dari RevoU (PT Revolusi Cita Edukasi), perusahaan ', size: 22 }),
+              new TextRun({ text: 'ed-tech', italics: true, size: 22 }),
+              new TextRun({ text: ' yang fokus pada pengembangan kompetensi profesional di bidang digital. RevoU menghadirkan program ', size: 22 }),
+              new TextRun({ text: 'upskilling', italics: true, size: 22 }),
+              new TextRun({ text: ' yang memadukan kurikulum berbasis praktik dengan kebutuhan nyata dunia industri.', size: 22 }),
+            ],
+          }),
+          new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 160, line: 276 },
+            children: [
+              new TextRun({ text: 'Sejalan dengan semakin pentingnya peran HR sebagai mitra strategis bisnis serta pemanfaatan kecerdasan artifisial (AI) dalam meningkatkan produktivitas organisasi, kami dengan senang hati menawarkan ', size: 22 }),
+              new TextRun({ text: 'program pengembangan kompetensi', bold: true, size: 22 }),
+              new TextRun({ text: ' untuk dipertimbangkan oleh ', size: 22 }),
+              new TextRun({
+                text: effectiveCompany,
+                bold: true,
+                size: 22,
+              }),
+              new TextRun({ text: ' bagi pengembangan kompetensi karyawan Bapak/Ibu: ', size: 22 }),
+              new TextRun({
+                text: effectiveEmployee,
+                bold: true,
+                size: 22,
+              }),
+              new TextRun({ text: '.', size: 22 }),
+            ],
+          }),
+          new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 160, line: 276 },
+            children: [
+              new TextRun({ text: 'Program Strategic HR with AI (RevoU)', bold: true, size: 22 }),
+              new TextRun({ text: ' dirancang untuk menjawab tantangan yang dihadapi fungsi HR modern. Banyak praktisi HR yang kuat di sisi eksekusi, namun belum dilibatkan dalam pengambilan keputusan strategis. Program ini membekali peserta dengan kemampuan HR Business Partner (HRBP) secara menyeluruh, mencakup ', size: 22 }),
+              new TextRun({ text: 'Organisation Development', italics: true, size: 22 }),
+              new TextRun({ text: ', ', size: 22 }),
+              new TextRun({ text: 'Talent Management', italics: true, size: 22 }),
+              new TextRun({ text: ', ', size: 22 }),
+              new TextRun({ text: 'Performance Management', italics: true, size: 22 }),
+              new TextRun({ text: ', ', size: 22 }),
+              new TextRun({ text: 'Compensation & Benefits', italics: true, size: 22 }),
+              new TextRun({ text: ', serta ', size: 22 }),
+              new TextRun({ text: 'HR Operations & Compliance', italics: true, size: 22 }),
+              new TextRun({ text: ' — dengan AI terintegrasi sebagai mitra kerja di sepanjang program.', size: 22 }),
+            ],
+          }),
+          new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 160, line: 276 },
+            children: [
+              new TextRun({ text: 'Melalui program ini, peserta tidak hanya mempelajari konsep, tetapi juga menerapkannya langsung melalui studi kasus dan project di setiap modul.', size: 22 }),
+            ],
+          }),
+          new Paragraph({
+            spacing: { after: 60, line: 276 },
+            children: [
+              new TextRun({ text: 'Selama program berlangsung, peserta akan:', size: 22 }),
+            ],
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 40, line: 276 },
+            children: [
+              new TextRun({ text: 'Mengasah kemampuan mendiagnosa situasi bisnis dan menerjemahkannya menjadi prioritas dan strategi HR yang tepat.', size: 22 }),
+            ]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 40, line: 276 },
+            children: [
+              new TextRun({ text: 'Mengerjakan project portofolio di setiap modul berbasis skenario perusahaan yang realistis (total 6 mini project + 1 capstone).', size: 22 }),
+            ]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 40, line: 276 },
+            children: [
+              new TextRun({ text: 'Menyusun rencana kerja HRBP 6 bulan (capstone) lengkap dengan AI-enabled solution yang berfungsi, dan mempresentasikannya di hadapan simulated leadership panel.', size: 22 }),
+            ]
+          }),
+
+          // PAGE 2: Clean Page Break (Header is automatically supplied by section Header)
+          new Paragraph({ children: [new PageBreak()] }),
+
+          new Paragraph({
+            spacing: { before: 80, after: 60, line: 276 },
+            children: [new TextRun({ text: 'Detail Program:', bold: true, size: 22 })]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            spacing: { after: 40, line: 276 },
+            children: [
+              new TextRun({ text: 'Durasi: 15 minggu, mulai ', size: 22 }),
+              new TextRun({
+                text: startDate,
+                size: 22,
+              }),
+            ]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            spacing: { after: 40, line: 276 },
+            children: [new TextRun({ text: `Format: ${currentTemplate.format}`, size: 22 })]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            spacing: { after: 40, line: 276 },
+            children: [new TextRun({ text: `Sesi Online: ${currentTemplate.onlineSchedule}`, size: 22 })]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            spacing: { after: 40, line: 276 },
+            children: [new TextRun({ text: `Sertifikat: ${currentTemplate.certification}`, size: 22 })]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            spacing: { after: 120, line: 276 },
+            children: [
+              new TextRun({ text: `Biaya Program: `, size: 22 }),
+              new TextRun({ text: normalPrice, strike: true, size: 22, color: '4B5563' }),
+              new TextRun({ text: ` ` }),
+              new TextRun({
+                text: fullPromoPrice,
+                bold: true,
+                size: 22,
+              })
+            ]
+          }),
+          new Paragraph({
+            spacing: { before: 100, after: 60, line: 276 },
+            children: [new TextRun({ text: 'Manfaat bagi Organisasi:', bold: true, size: 22 })]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 40, line: 276 },
+            children: [
+              new TextRun({ text: 'Membangun kapabilitas HR strategis internal yang mampu menjadi mitra strategi bisnis, bukan sekadar menjalankan proses.', size: 22 }),
+            ]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 40, line: 276 },
+            children: [
+              new TextRun({ text: 'Satu program mencakup seluruh domain HR serta keterkaitannya, tanpa perlu pelatihan terpisah per fungsi.', size: 22 }),
+            ]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 40, line: 276 },
+            children: [
+              new TextRun({ text: 'Meningkatkan kesiapan AI fungsi HR, dengan pendekatan ', size: 22 }),
+              new TextRun({ text: 'tool-agnostic', italics: true, size: 22 }),
+              new TextRun({ text: ' sehingga relevan dengan tools apa pun yang digunakan perusahaan.', size: 22 }),
+            ]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 40, line: 276 },
+            children: [
+              new TextRun({ text: 'Menghasilkan output nyata: rencana kerja HRBP 6 bulan dan ', size: 22 }),
+              new TextRun({ text: 'AI-enabled solution', italics: true, size: 22 }),
+              new TextRun({ text: ' yang dapat langsung diadaptasi untuk kebutuhan perusahaan.', size: 22 }),
+            ]
+          }),
+          new Paragraph({
+            bullet: { level: 0 },
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { after: 120, line: 276 },
+            children: [new TextRun({ text: 'Meningkatkan retensi karyawan melalui investasi pada jalur pengembangan karir yang jelas.', size: 22 })]
+          })
+        );
+      } else if (templateType === 'binus') {
         bodyParagraphs.push(
           new Paragraph({
             alignment: AlignmentType.JUSTIFIED,
@@ -1228,7 +1550,14 @@ RevoU (PT Revolusi Cita Edukasi)
               bold: true,
               size: 22,
             }),
-            new TextRun({ text: templateType === 'binus' ? ', dalam mendukung pengembangan kompetensi para pemimpin dan karyawan.' : ' dalam mendukung pengembangan kompetensi para pemimpin dan karyawan.', size: 22 }),
+            new TextRun({
+              text: templateType === 'binus'
+                ? ', dalam mendukung pengembangan kompetensi para pemimpin dan karyawan.'
+                : templateType === 'hr'
+                  ? ' dalam mendukung pengembangan kompetensi para karyawan.'
+                  : ' dalam mendukung pengembangan kompetensi para pemimpin dan karyawan.',
+              size: 22,
+            }),
           ],
         }),
         new Paragraph({
@@ -1364,16 +1693,6 @@ RevoU (PT Revolusi Cita Edukasi)
           <button
             type="button"
             className="btn btn-secondary"
-            onClick={handlePrintPdf}
-            title="Cetak atau simpan surat langsung sebagai PDF"
-          >
-            <span>🖨️</span>
-            <span>Cetak / PDF</span>
-          </button>
-
-          <button
-            type="button"
-            className="btn btn-secondary"
             onClick={handleDownloadDocx}
             title="Unduh file dokumen dalam format Microsoft Word (.docx)"
           >
@@ -1392,21 +1711,20 @@ RevoU (PT Revolusi Cita Edukasi)
           <div className="section-card university-card">
             <div className="section-header" style={{ marginBottom: '0.6rem' }}>
               <div className="section-title">
-                <span>🎓</span>
-                <span>Pilih Tipe Surat (Kerjasama)</span>
+                <span>Pilih Tipe Surat Penawaran</span>
               </div>
-              <span className={`program-indicator-pill ${templateType === 'itb' ? 'pill-itb' : 'pill-binus'}`}>
-                {templateType === 'itb' ? '🏛️ ITB Aktif' : '🏢 BINUS Aktif'}
+              <span className={`program-indicator-pill ${currentTemplate.pillClass || (templateType === 'itb' ? 'pill-itb' : templateType === 'binus' ? 'pill-binus' : 'pill-hr')}`}>
+                {currentTemplate.badge || (templateType === 'itb' ? '🏛️ ITB Aktif' : templateType === 'binus' ? 'Aktif' : '👥 Strategic HR Aktif')}
               </span>
             </div>
 
             <p style={{ fontSize: '0.75rem', color: 'var(--revou-muted)', marginBottom: '0.75rem' }}>
-              Pilih program kemitraan universitas yang ingin ditawarkan:
+              Pilih program penawaran yang ingin dibuatkan suratnya:
             </p>
 
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label htmlFor={templateSelectId} className="form-label" style={{ fontWeight: 700 }}>
-                Program Universitas
+                Program Penawaran
               </label>
               <div className="select-interactive-wrapper">
                 <select
@@ -1417,6 +1735,7 @@ RevoU (PT Revolusi Cita Edukasi)
                 >
                   <option value="itb">🏛️ RevoU X ITB (Data-Driven &amp; AI Decision Making)</option>
                   <option value="binus">🏢 RevoU X BINUS (Applied AI, Analytics &amp; Automation)</option>
+                  <option value="hr">👥 Strategic HR with AI (RevoU Executive Program)</option>
                 </select>
               </div>
             </div>
@@ -1426,8 +1745,7 @@ RevoU (PT Revolusi Cita Edukasi)
           <div className="section-card primary-card">
             <div className="section-header">
               <div className="section-title">
-                <span>📝</span>
-                <span>3 Data Utama Penawaran</span>
+                <span>Data Utama Penawaran</span>
               </div>
               <span className="badge-tag">Wajib Diisi</span>
             </div>
@@ -1521,13 +1839,25 @@ RevoU (PT Revolusi Cita Edukasi)
             <div className="form-group" style={{ marginTop: '0.8rem', borderTop: '1px dashed #E2E8F0', paddingTop: '0.8rem' }}>
               <label htmlFor={employeeNameId} className="form-label">
                 <span>Nama Karyawan / Peserta (Opsional)</span>
-                <span className="helper">{templateType === 'binus' ? 'Contoh: Pak Hendra Permana' : 'Default: ______'}</span>
+                <span className="helper">
+                  {templateType === 'binus'
+                    ? 'Contoh: Pak Hendra Permana'
+                    : templateType === 'hr'
+                      ? 'Contoh: Yudithia Aprilinda'
+                      : 'Default: ______'}
+                </span>
               </label>
               <input
                 id={employeeNameId}
                 type="text"
                 className="form-input"
-                placeholder={templateType === 'binus' ? 'Pak Hendra Permana' : '______'}
+                placeholder={
+                  templateType === 'binus'
+                    ? 'Pak Hendra Permana'
+                    : templateType === 'hr'
+                      ? 'Yudithia Aprilinda'
+                      : '______'
+                }
                 value={employeeName}
                 onChange={(e) => setEmployeeName(e.target.value)}
               />
@@ -1539,11 +1869,9 @@ RevoU (PT Revolusi Cita Edukasi)
           <div className="section-card">
             <div className="section-header">
               <div className="section-title">
-                <span>⚙️</span>
                 <span>Tanggal, Nomor &amp; Detail Surat</span>
               </div>
             </div>
-
             <div className="form-group">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
                 <label htmlFor={letterDateId} className="form-label" style={{ marginBottom: 0 }}>
@@ -1638,19 +1966,10 @@ RevoU (PT Revolusi Cita Edukasi)
             <button
               type="button"
               className="btn btn-secondary"
-              style={{ width: '100%', padding: '0.65rem', fontSize: '0.88rem', marginBottom: '0.5rem' }}
+              style={{ width: '100%', padding: '0.65rem', fontSize: '0.88rem' }}
               onClick={handleDownloadDocx}
             >
               📥 Unduh Format .DOCX (Word)
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-secondary"
-              style={{ width: '100%', padding: '0.65rem', fontSize: '0.88rem' }}
-              onClick={handlePrintPdf}
-            >
-              🖨️ Cetak / Unduh Format PDF
             </button>
 
             <div style={{ marginTop: '0.65rem' }}>
@@ -1723,8 +2042,8 @@ RevoU (PT Revolusi Cita Edukasi)
                 {/* Header */}
                 <header className="letter-header">
                   <Image
-                    src="/revou-logo.png"
-                    alt="Logo RevoU"
+                    src={currentTemplate.logo || "/revou-logo.png"}
+                    alt={currentTemplate.logoAlt || "Logo RevoU"}
                     width={86}
                     height={86}
                     style={{ objectFit: 'contain' }}
@@ -1799,7 +2118,41 @@ RevoU (PT Revolusi Cita Edukasi)
                   Semoga Bapak/Ibu dalam keadaan sehat dan baik.
                 </p>
 
-                {templateType === 'binus' ? (
+                {templateType === 'hr' ? (
+                  <>
+                    <p className="letter-paragraph">
+                      Perkenalkan, kami dari RevoU (PT Revolusi Cita Edukasi), perusahaan <em>ed-tech</em> yang fokus pada pengembangan kompetensi profesional di bidang digital. RevoU menghadirkan program <em>upskilling</em> yang memadukan kurikulum berbasis praktik dengan kebutuhan nyata dunia industri.
+                    </p>
+
+                    <p className="letter-paragraph">
+                      Sejalan dengan semakin pentingnya peran HR sebagai mitra strategis bisnis serta pemanfaatan kecerdasan artifisial (AI) dalam meningkatkan produktivitas organisasi, kami dengan senang hati menawarkan <strong>program pengembangan kompetensi</strong> untuk dipertimbangkan oleh <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan> bagi pengembangan kompetensi karyawan Bapak/Ibu: <HighlightSpan><strong>{effectiveEmployee}</strong></HighlightSpan>.
+                    </p>
+
+                    <p className="letter-paragraph">
+                      <strong>Program Strategic HR with AI (RevoU)</strong> dirancang untuk menjawab tantangan yang dihadapi fungsi HR modern. Banyak praktisi HR yang kuat di sisi eksekusi, namun belum dilibatkan dalam pengambilan keputusan strategis. Program ini membekali peserta dengan kemampuan HR Business Partner (HRBP) secara menyeluruh, mencakup <em>Organisation Development</em>, <em>Talent Management</em>, <em>Performance Management</em>, <em>Compensation &amp; Benefits</em>, serta <em>HR Operations &amp; Compliance</em> — dengan AI terintegrasi sebagai mitra kerja di sepanjang program.
+                    </p>
+
+                    <p className="letter-paragraph">
+                      Melalui program ini, peserta tidak hanya mempelajari konsep, tetapi juga menerapkannya langsung melalui studi kasus dan project di setiap modul.
+                    </p>
+
+                    <div className="letter-paragraph" style={{ marginBottom: '6px' }}>
+                      Selama program berlangsung, peserta akan:
+                    </div>
+
+                    <ul className="letter-list">
+                      <li>
+                        Mengasah kemampuan mendiagnosa situasi bisnis dan menerjemahkannya menjadi prioritas dan strategi HR yang tepat.
+                      </li>
+                      <li>
+                        Mengerjakan project portofolio di setiap modul berbasis skenario perusahaan yang realistis (total 6 mini project + 1 capstone).
+                      </li>
+                      <li>
+                        Menyusun rencana kerja HRBP 6 bulan (capstone) lengkap dengan <em>AI-enabled solution</em> yang berfungsi, dan mempresentasikannya di hadapan <em>simulated leadership panel</em>.
+                      </li>
+                    </ul>
+                  </>
+                ) : templateType === 'binus' ? (
                   <>
                     <p className="letter-paragraph">
                       Perkenalkan, kami dari RevoU (PT Revolusi Cita Edukasi), perusahaan <em>edtech</em> yang berfokus pada pengembangan kompetensi profesional di bidang digital. Melalui kolaborasi dengan universitas terkemuka di Indonesia, RevoU menghadirkan program <em>upskilling</em> yang memadukan pembelajaran akademis dengan praktik dan kebutuhan dunia industri.
@@ -1891,8 +2244,8 @@ RevoU (PT Revolusi Cita Edukasi)
                 {/* Header (replicated on page 2) */}
                 <header className="letter-header">
                   <Image
-                    src="/revou-logo.png"
-                    alt="Logo RevoU"
+                    src={currentTemplate.logo || "/revou-logo.png"}
+                    alt={currentTemplate.logoAlt || "Logo RevoU"}
                     width={86}
                     height={86}
                     style={{ objectFit: 'contain' }}
@@ -1907,7 +2260,61 @@ RevoU (PT Revolusi Cita Edukasi)
                   </div>
                 </header>
 
-                {templateType === 'binus' ? (
+                {templateType === 'hr' ? (
+                  <>
+                    {/* Detail Program for HR */}
+                    <div className="section-subtitle">
+                      Detail Program:
+                    </div>
+                    <ul className="letter-list" style={{ marginBottom: '14px' }}>
+                      <li>
+                        Durasi: 15 minggu, mulai <HighlightSpan>{startDate}</HighlightSpan>
+                      </li>
+                      <li>
+                        Format: {currentTemplate.format}
+                      </li>
+                      <li>
+                        Sesi Online: {currentTemplate.onlineSchedule}
+                      </li>
+                      <li>
+                        Sertifikat: {currentTemplate.certification}
+                      </li>
+                      <li>
+                        Biaya Program: <span className="price-strike">{normalPrice}</span> <HighlightSpan>{fullPromoPrice}</HighlightSpan>
+                      </li>
+                    </ul>
+
+                    {/* Manfaat bagi Organisasi */}
+                    <div className="section-subtitle">
+                      Manfaat bagi Organisasi:
+                    </div>
+                    <ul className="letter-list">
+                      <li>
+                        Membangun kapabilitas HR strategis internal yang mampu menjadi mitra strategi bisnis, bukan sekadar menjalankan proses.
+                      </li>
+                      <li>
+                        Satu program mencakup seluruh domain HR serta keterkaitannya, tanpa perlu pelatihan terpisah per fungsi.
+                      </li>
+                      <li>
+                        Meningkatkan kesiapan AI fungsi HR, dengan pendekatan <em>tool-agnostic</em> sehingga relevan dengan tools apa pun yang digunakan perusahaan.
+                      </li>
+                      <li>
+                        Menghasilkan output nyata: rencana kerja HRBP 6 bulan dan <em>AI-enabled solution</em> yang dapat langsung diadaptasi untuk kebutuhan perusahaan.
+                      </li>
+                      <li>
+                        Meningkatkan retensi karyawan melalui investasi pada jalur pengembangan karir yang jelas.
+                      </li>
+                    </ul>
+
+                    <p className="letter-paragraph">
+                      Kami percaya program ini dapat memberikan nilai tambah bagi <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan>, khususnya dalam memperkuat kapabilitas sumber daya manusia dan mempersiapkan fungsi HR menghadapi kebutuhan bisnis yang semakin strategis dan didukung oleh perkembangan teknologi AI.
+                    </p>
+
+                    <p className="letter-paragraph">
+                      Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan> dalam mendukung pengembangan kompetensi para karyawan.
+                    </p>
+                  </>
+                ) : templateType === 'binus' ? (
                   <>
                     {/* Continued bullet from Page 1 */}
                     <ul className="letter-list" style={{ marginTop: 0, marginBottom: '14px' }}>
