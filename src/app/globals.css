@@ -407,6 +407,42 @@ body {
   border-color: #6366F1;
 }
 
+.pill-fsda {
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid #BAE6FD;
+}
+
+[data-theme="dark"] .pill-fsda {
+  background: #0C4A6E;
+  color: #BAE6FD;
+  border-color: #0284C7;
+}
+
+.pill-fsdm {
+  background: #FFE4E6;
+  color: #BE123C;
+  border: 1px solid #FECDD3;
+}
+
+[data-theme="dark"] .pill-fsdm {
+  background: #881337;
+  color: #FECDD3;
+  border-color: #E11D48;
+}
+
+.pill-fsse {
+  background: #F3E8FF;
+  color: #6B21A8;
+  border: 1px solid #E9D5FF;
+}
+
+[data-theme="dark"] .pill-fsse {
+  background: #581C87;
+  color: #E9D5FF;
+  border-color: #9333EA;
+}
+
 .section-header {
   display: flex;
   align-items: center;
