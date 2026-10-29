@@ -93,11 +93,10 @@ export default function LetterForm({
             <span>Pilih Jenis Surat</span>
           </div>
           <span
-            className={`program-indicator-pill ${
-              isOffering
+            className={`program-indicator-pill ${isOffering
                 ? currentTemplate.pillClass || 'pill-itb'
                 : 'pill-loc'
-            }`}
+              }`}
           >
             {isOffering
               ? currentTemplate.badge || 'Aktif'
@@ -122,7 +121,7 @@ export default function LetterForm({
               onChange={(e) => handleCategoryChange(e.target.value)}
             >
               <option value="penawaran">Surat Penawaran</option>
-              <option value="loc">Surat LoC ( tambahan )</option>
+              <option value="loc">Surat LoC</option>
             </select>
           </div>
         </div>
