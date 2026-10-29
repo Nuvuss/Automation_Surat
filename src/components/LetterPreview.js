@@ -8,6 +8,20 @@ import DigitalSignature from './DigitalSignature';
 export default function LetterPreview({
   zoomScale,
   setZoomScale,
+  // Letter Category
+  letterCategory = 'penawaran',
+  currentLocProgram,
+  locApproverName,
+  locApproverPosition,
+  locInstitutionName,
+  locNpwp,
+  locAddress,
+  locApplicantsText,
+  locTuition,
+  locPaymentDeadline,
+  locPlace,
+
+  // Offering letter props
   currentTemplate,
   letterDate,
   effectiveLetterNumber,
@@ -24,6 +38,21 @@ export default function LetterPreview({
   signerEmail,
   signerTitle,
 }) {
+  const isOffering = letterCategory === 'penawaran';
+  const effectiveInstitution = locInstitutionName?.trim() || 'PT ABC';
+  const effectiveTuition = locTuition?.trim() || 'IDR 25,500,000';
+  const effectiveProgram = currentLocProgram?.name || 'Full-Stack Digital Marketing';
+  const effectiveDeadline = locPaymentDeadline?.trim() || '[Date of Payment]';
+  const effectivePlace = locPlace?.trim() || 'Jakarta';
+
+  const applicantList = typeof locApplicantsText === 'string'
+    ? locApplicantsText
+        .split('\n')
+        .map((line) => line.replace(/^\d+[\.\)]\s*/, '').trim())
+        .filter(Boolean)
+    : [];
+  const safeApplicants = applicantList.length > 0 ? applicantList : ['Zakki', 'Pita'];
+
   return (
         <main className="preview-area">
           {/* Zoom & View Toolbar */}
@@ -61,9 +90,11 @@ export default function LetterPreview({
             <div style={{ height: '18px', width: '1px', background: '#CBD5E1' }}></div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: '#475569' }}>
-              <span style={{ fontWeight: 700, color: '#1E40AF' }}>{currentTemplate.name}</span>
+              <span style={{ fontWeight: 700, color: '#1E40AF' }}>
+                {isOffering ? currentTemplate.name : effectiveProgram}
+              </span>
               <span style={{ color: '#94A3B8' }}>•</span>
-              <span>2 Halaman A4</span>
+              <span>{isOffering ? '2 Halaman A4' : '1 Halaman A4'}</span>
             </div>
           </div>
 
@@ -73,6 +104,90 @@ export default function LetterPreview({
             className="paper-container"
             style={{ transform: `scale(${zoomScale})` }}
           >
+            {!isOffering ? (
+              /* ===================== LETTER OF COMMITMENT (1 HALAMAN) ===================== */
+              <div className="page-wrapper">
+                <div className="page-number-pill no-print">Letter of Commitment (1 Halaman A4)</div>
+                <article className="a4-sheet loc-sheet" id="page-loc">
+                  {/* Header company placeholder */}
+                  <div className="loc-header-box">
+                    <strong>[HEADER COMPANY/INSTITUTION LETTER WITH LOGO]</strong>
+                  </div>
+
+                  {/* Title */}
+                  <h1 className="loc-title">Letter of Commitment</h1>
+
+                  {/* Salutation / Statement intro */}
+                  <p className="loc-intro">I, the undersigned, hereby:</p>
+
+                  {/* Info table */}
+                  <div className="loc-info-grid">
+                    <div className="loc-info-row">
+                      <div className="loc-label">Name</div>
+                      <div className="loc-colon">:</div>
+                      <div className="loc-value" style={{ color: '#0000FF' }}>
+                        (Name of person who approves the training)
+                      </div>
+                    </div>
+
+                    <div className="loc-info-row">
+                      <div className="loc-label">Position</div>
+                      <div className="loc-colon">:</div>
+                      <div className="loc-value"></div>
+                    </div>
+
+                    <div className="loc-info-row">
+                      <div className="loc-label">Institution Name</div>
+                      <div className="loc-colon">:</div>
+                      <div className="loc-value"></div>
+                    </div>
+
+                    <div className="loc-info-row">
+                      <div className="loc-label">NPWP</div>
+                      <div className="loc-colon">:</div>
+                      <div className="loc-value"></div>
+                    </div>
+
+                    <div className="loc-info-row">
+                      <div className="loc-label">Address</div>
+                      <div className="loc-colon">:</div>
+                      <div className="loc-value"></div>
+                    </div>
+
+                    <div className="loc-info-row">
+                      <div className="loc-label">Name of Applicant(s)</div>
+                      <div className="loc-colon">:</div>
+                      <div className="loc-value">
+                        <div className="loc-applicants-list">
+                          {safeApplicants.map((app, idx) => (
+                            <div key={idx} className="loc-applicant-item">
+                              <HighlightSpan>{`${idx + 1}. ${app}`}</HighlightSpan>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Commitment Declaration */}
+                  <p className="loc-declaration">
+                    declare that <HighlightSpan><strong>{effectiveInstitution}</strong></HighlightSpan> agrees to pay the enrollment tuition for the applicants in the amount of <HighlightSpan><strong>{effectiveTuition}</strong></HighlightSpan> for the <HighlightSpan><strong>{effectiveProgram}</strong></HighlightSpan> program on <HighlightSpan><strong>{effectiveDeadline}</strong></HighlightSpan> at the latest. If the company has not paid by the deadline, the institution agrees to cancel the applicant’s participation in the program.
+                  </p>
+
+                  {/* Signature Section */}
+                  <div className="loc-signature-block">
+                    <div className="loc-place-date" style={{ color: '#0000FF' }}>
+                      ({effectivePlace}), 
+                    </div>
+                    <div className="loc-stamp-space"></div>
+                    <div className="loc-signer-name" style={{ color: '#0000FF' }}>
+                      (Name of Person in charge &amp; office stamp)
+                    </div>
+                  </div>
+                </article>
+              </div>
+            ) : (
+              <>
             {/* ===================== HALAMAN 1 ===================== */}
             <div className="page-wrapper">
               <div className="page-number-pill no-print">Halaman 1 dari 2 ({currentTemplate.name})</div>
@@ -835,6 +950,8 @@ export default function LetterPreview({
                 </div>
               </article>
             </div>
+            </>
+          )}
           </div>
         </main>
 

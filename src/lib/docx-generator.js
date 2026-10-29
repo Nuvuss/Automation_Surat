@@ -1911,5 +1911,287 @@ export async function downloadDocx({
     } catch (err) {
       console.error('Error generating docx:', err);
     }
+}
+
+/**
+ * Generates and triggers download of the Letter of Commitment (.docx) document
+ */
+export async function downloadLocDocx({
+  approverName,
+  approverPosition,
+  institutionName,
+  npwp,
+  address,
+  applicants = [],
+  tuitionAmount,
+  programName,
+  paymentDeadline,
+  place
+}) {
+  try {
+    const {
+      Document,
+      Packer,
+      Paragraph,
+      TextRun,
+      AlignmentType,
+      Table,
+      TableRow,
+      TableCell,
+      BorderStyle,
+      WidthType,
+    } = await import('docx');
+
+    const noneBorder = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+    const tableBordersNone = {
+      top: noneBorder,
+      bottom: noneBorder,
+      left: noneBorder,
+      right: noneBorder,
+      insideHorizontal: noneBorder,
+      insideVertical: noneBorder,
+    };
+    const cellBordersNone = {
+      top: noneBorder,
+      bottom: noneBorder,
+      left: noneBorder,
+      right: noneBorder,
+    };
+
+    const effectiveInstitution = institutionName?.trim() || 'PT ABC';
+    const effectiveTuition = tuitionAmount?.trim() || 'IDR 25,500,000';
+    const effectiveProgram = programName?.trim() || 'Full-Stack Digital Marketing';
+    const effectiveDeadline = paymentDeadline?.trim() || '[Date of Payment]';
+    const effectivePlace = place?.trim() || 'Jakarta';
+
+    // Parse applicants
+    const applicantList = Array.isArray(applicants)
+      ? applicants
+      : (typeof applicants === 'string'
+          ? applicants
+              .split('\n')
+              .map(line => line.replace(/^\d+[\.\)]\s*/, '').trim())
+              .filter(Boolean)
+          : []);
+
+    const safeApplicants = applicantList.length > 0 ? applicantList : ['Zakki', 'Pita'];
+
+    const createFieldRow = (label, value, color) => {
+      return new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 2800, type: WidthType.DXA },
+            borders: cellBordersNone,
+            children: [
+              new Paragraph({
+                children: [new TextRun({ text: label, size: 22 })],
+                spacing: { before: 40, after: 40, line: 260 },
+              }),
+            ],
+          }),
+          new TableCell({
+            width: { size: 300, type: WidthType.DXA },
+            borders: cellBordersNone,
+            children: [
+              new Paragraph({
+                children: [new TextRun({ text: ':', size: 22 })],
+                spacing: { before: 40, after: 40, line: 260 },
+              }),
+            ],
+          }),
+          new TableCell({
+            width: { size: 5800, type: WidthType.DXA },
+            borders: cellBordersNone,
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: value || '',
+                    size: 22,
+                    ...(color ? { color } : {}),
+                  }),
+                ],
+                spacing: { before: 40, after: 40, line: 260 },
+              }),
+            ],
+          }),
+        ],
+      });
+    };
+
+    // Applicants row
+    const applicantsRow = new TableRow({
+      children: [
+        new TableCell({
+          width: { size: 2800, type: WidthType.DXA },
+          borders: cellBordersNone,
+          children: [
+            new Paragraph({
+              children: [new TextRun({ text: 'Name of Applicant(s)', size: 22 })],
+              spacing: { before: 40, after: 40, line: 260 },
+            }),
+          ],
+        }),
+        new TableCell({
+          width: { size: 300, type: WidthType.DXA },
+          borders: cellBordersNone,
+          children: [
+            new Paragraph({
+              children: [new TextRun({ text: ':', size: 22 })],
+              spacing: { before: 40, after: 40, line: 260 },
+            }),
+          ],
+        }),
+        new TableCell({
+          width: { size: 5800, type: WidthType.DXA },
+          borders: cellBordersNone,
+          children: safeApplicants.map((app, idx) => (
+            new Paragraph({
+              children: [new TextRun({ text: `${idx + 1}. ${app}`, size: 22 })],
+              spacing: { before: 20, after: 20, line: 260 },
+            })
+          )),
+        }),
+      ],
+    });
+
+    const infoTable = new Table({
+      width: { size: 8900, type: WidthType.DXA },
+      borders: tableBordersNone,
+      rows: [
+        createFieldRow('Name', '(Name of person who approves the training)', '0000FF'),
+        createFieldRow('Position', ''),
+        createFieldRow('Institution Name', ''),
+        createFieldRow('NPWP', ''),
+        createFieldRow('Address', ''),
+        applicantsRow,
+      ],
+    });
+
+    const doc = new Document({
+      styles: {
+        default: {
+          document: {
+            run: {
+              font: 'Arial',
+            },
+          },
+        },
+      },
+      sections: [
+        {
+          properties: {
+            page: {
+              margin: {
+                top: 1440,
+                right: 1440,
+                bottom: 1440,
+                left: 1440,
+              },
+            },
+          },
+          children: [
+            // Header placeholder
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: '[HEADER COMPANY/INSTITUTION LETTER WITH LOGO]',
+                  bold: true,
+                  size: 22,
+                }),
+              ],
+              spacing: { before: 0, after: 480, line: 260 },
+            }),
+
+            // Title
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [
+                new TextRun({
+                  text: 'Letter of Commitment',
+                  bold: true,
+                  size: 26,
+                }),
+              ],
+              spacing: { before: 0, after: 560, line: 260 },
+            }),
+
+            // Salutation / Undersigned
+            new Paragraph({
+              alignment: AlignmentType.LEFT,
+              children: [
+                new TextRun({
+                  text: 'I, the undersigned, hereby:',
+                  size: 22,
+                }),
+              ],
+              spacing: { before: 0, after: 280, line: 260 },
+            }),
+
+            // Form Table
+            infoTable,
+
+            // Statement Paragraph
+            new Paragraph({
+              alignment: AlignmentType.LEFT,
+              children: [
+                new TextRun({ text: 'declare that ', size: 22 }),
+                new TextRun({ text: effectiveInstitution, bold: true, size: 22 }),
+                new TextRun({ text: ' agrees to pay the enrollment tuition for the applicants in the amount of ', size: 22 }),
+                new TextRun({ text: effectiveTuition, bold: true, size: 22 }),
+                new TextRun({ text: ' for the ', size: 22 }),
+                new TextRun({ text: effectiveProgram, bold: true, size: 22 }),
+                new TextRun({ text: ' program on ', size: 22 }),
+                new TextRun({ text: effectiveDeadline, bold: true, size: 22 }),
+                new TextRun({
+                  text: ' at the latest. If the company has not paid by the deadline, the institution agrees to cancel the applicant’s participation in the program.',
+                  size: 22,
+                }),
+              ],
+              spacing: { before: 400, after: 800, line: 300 },
+            }),
+
+            // Signature area
+            new Paragraph({
+              alignment: AlignmentType.RIGHT,
+              children: [
+                new TextRun({
+                  text: `(${effectivePlace}), `,
+                  color: '0000FF',
+                  size: 22,
+                }),
+              ],
+              spacing: { before: 0, after: 1400, line: 260 },
+            }),
+
+            new Paragraph({
+              alignment: AlignmentType.RIGHT,
+              children: [
+                new TextRun({
+                  text: '(Name of Person in charge & office stamp)',
+                  color: '0000FF',
+                  size: 22,
+                }),
+              ],
+              spacing: { before: 0, after: 0, line: 260 },
+            }),
+          ],
+        },
+      ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Letter_of_Commitment_${effectiveInstitution.replace(/\s+/g, '_')}_${effectiveProgram.replace(/[^a-zA-Z0-9]+/g, '_')}.docx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error('Error generating LoC docx:', err);
+    }
 
 }

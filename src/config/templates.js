@@ -1,3 +1,46 @@
+// Letter Categories
+export const LETTER_CATEGORIES = {
+  PENAWARAN: 'penawaran',
+  LOC: 'loc',
+};
+
+// 7 Offering Programs (Surat Penawaran)
+export const OFFERING_PROGRAMS = [
+  { id: 'itb', name: 'RevoU X ITB (Data-Driven & AI Decision Making)' },
+  { id: 'itb_ds', name: 'RevoU X ITB (Applied Data Science with AI)' },
+  { id: 'binus', name: 'RevoU X BINUS (Applied AI, Analytics & Automation)' },
+  { id: 'hr', name: 'Strategic HR with AI (RevoU Executive Program)' },
+  { id: 'fsda', name: 'Full Stack Data Analytics (RevoU FSDA)' },
+  { id: 'fsdm', name: 'Full Stack Digital Marketing (RevoU FSDM)' },
+  { id: 'fsse', name: 'Full Stack Software Engineering (RevoU FSSE)' },
+];
+
+// 9 LoC Programs (Surat LoC / Letter of Commitment)
+export const LOC_PROGRAMS = [
+  { id: 'fsdm', name: 'Full-Stack Digital Marketing' },
+  { id: 'fsda', name: 'Full-Stack Data Analytics' },
+  { id: 'fsse', name: 'Full-Stack Software Engineering' },
+  { id: 'binus_ai', name: 'Applied AI, Analytics & Automation: BINUS x RevoU' },
+  { id: 'binus_cyber', name: 'Applied Cybersecurity with AI: BINUS x RevoU' },
+  { id: 'itb_lead', name: 'AI & Data-Driven Decision Making for Leaders: ITB x RevoU' },
+  { id: 'itb_ds', name: 'Applied Data Science with AI: ITB x RevoU' },
+  { id: 'ui_fin', name: 'AI-Enabled for Strategic Finance: UI x RevoU' },
+  { id: 'hr', name: 'Strategic HR with AI' },
+];
+
+export const DEFAULT_LOC_DATA = {
+  approverName: '',
+  approverPosition: '',
+  institutionName: 'PT ABC',
+  npwp: '',
+  address: '',
+  applicantsText: '1. Zakki\n2. Pita',
+  tuitionAmount: 'IDR 25,500,000',
+  programId: 'fsdm',
+  paymentDeadline: '15 November 2026',
+  place: 'Jakarta',
+};
+
 // Real-time Date and Roman Month Helpers
 export const ROMAN_MONTHS = [
   'I', 'II', 'III', 'IV', 'V', 'VI',

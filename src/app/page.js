@@ -3,6 +3,9 @@
 import React, { useState, useId, useSyncExternalStore } from 'react';
 import {
   TEMPLATES,
+  OFFERING_PROGRAMS,
+  LOC_PROGRAMS,
+  DEFAULT_LOC_DATA,
   ROMAN_MONTHS,
   INDO_MONTHS,
   emptySubscribe,
@@ -13,7 +16,7 @@ import LetterForm from '@/components/LetterForm';
 import LetterPreview from '@/components/LetterPreview';
 import GoogleDocsModal from '@/components/GoogleDocsModal';
 import { generatePlainText, generateGoogleDocsHtml } from '@/lib/html-generator';
-import { downloadDocx } from '@/lib/docx-generator';
+import { downloadDocx, downloadLocDocx } from '@/lib/docx-generator';
 
 export default function SuratPenawaranGenerator() {
   const templateSelectId = useId();
@@ -31,19 +34,20 @@ export default function SuratPenawaranGenerator() {
   const additionalNoteId = useId();
   const certOptionId = useId();
 
-  // Template Type State
+  // Letter Category: 'penawaran' or 'loc'
+  const [letterCategory, setLetterCategory] = useState('penawaran');
+
+  // Offering Template Type State
   const [templateType, setTemplateType] = useState('itb');
 
-  // 3 Parameter Utama
+  // 3 Parameter Utama Penawaran
   const [roleOption, setRoleOption] = useState('Management');
   const [customRole, setCustomRole] = useState('');
-
   const [companyName, setCompanyName] = useState('PT Hatten Bali Tbk');
-
   const [locationOption, setLocationOption] = useState('di tempat');
   const [customLocation, setCustomLocation] = useState('');
 
-  // Nama Karyawan / Peserta
+  // Nama Karyawan / Peserta Penawaran
   const [employeeName, setEmployeeName] = useState('______');
 
   // Real-time client clock synchronization without hydration mismatch
@@ -69,7 +73,7 @@ export default function SuratPenawaranGenerator() {
   const [customLetterDate, setCustomLetterDate] = useState('');
   const letterDate = customLetterDate !== '' ? customLetterDate : clientDateString;
 
-  // Detail surat
+  // Detail surat Penawaran
   const [letterSeq, setLetterSeq] = useState('06');
   const [startDate, setStartDate] = useState('15 December 2026');
   const [normalPrice, setNormalPrice] = useState('Rp16.000.000');
@@ -80,6 +84,20 @@ export default function SuratPenawaranGenerator() {
   const [signerName, setSignerName] = useState('Pita Rini Fajrian Ramadhani');
   const [signerEmail, setSignerEmail] = useState('admission@revou.co');
   const [signerTitle, setSignerTitle] = useState('Admission Lead');
+
+  // ================= State Khusus Surat LoC =================
+  const [locProgram, setLocProgram] = useState(DEFAULT_LOC_DATA.programId);
+  const [locApproverName, setLocApproverName] = useState(DEFAULT_LOC_DATA.approverName);
+  const [locApproverPosition, setLocApproverPosition] = useState(DEFAULT_LOC_DATA.approverPosition);
+  const [locInstitutionName, setLocInstitutionName] = useState(DEFAULT_LOC_DATA.institutionName);
+  const [locNpwp, setLocNpwp] = useState(DEFAULT_LOC_DATA.npwp);
+  const [locAddress, setLocAddress] = useState(DEFAULT_LOC_DATA.address);
+  const [locApplicantsText, setLocApplicantsText] = useState(DEFAULT_LOC_DATA.applicantsText);
+  const [locTuition, setLocTuition] = useState(DEFAULT_LOC_DATA.tuitionAmount);
+  const [locPaymentDeadline, setLocPaymentDeadline] = useState(DEFAULT_LOC_DATA.paymentDeadline);
+  const [locPlace, setLocPlace] = useState(DEFAULT_LOC_DATA.place);
+
+  const currentLocProgram = LOC_PROGRAMS.find((p) => p.id === locProgram) || LOC_PROGRAMS[0];
 
   // UI state
   const [zoomScale, setZoomScale] = useState(0.88);
@@ -113,6 +131,16 @@ export default function SuratPenawaranGenerator() {
     }
   };
 
+  // Switch Category Handler
+  const handleCategoryChange = (newCat) => {
+    setLetterCategory(newCat);
+  };
+
+  // Switch LoC Program Handler
+  const handleLocProgramChange = (newProgId) => {
+    setLocProgram(newProgId);
+  };
+
   // Switch Template Handler
   const handleTemplateChange = (newType) => {
     setTemplateType(newType);
@@ -135,7 +163,7 @@ export default function SuratPenawaranGenerator() {
     setFsCertOption('Sertifikat penyelesaian program dari RevoU');
   };
 
-  // Compute final display strings
+  // Compute final display strings for Penawaran
   const isFullstack = templateType === 'fsda' || templateType === 'fsdm' || templateType === 'fsse';
   const effectiveRole = roleOption === 'Custom' ? (customRole.trim() || 'Management') : roleOption;
   const effectiveCompany = companyName.trim() || '[Nama Perusahaan]';
@@ -158,12 +186,24 @@ export default function SuratPenawaranGenerator() {
     setCustomLetterDate(getClientTodayString());
   };
 
-  // Reset to current template default
+  // Reset to default
   const handleReset = () => {
-    handleTemplateChange(templateType);
+    if (letterCategory === 'penawaran') {
+      handleTemplateChange(templateType);
+    } else {
+      setLocApproverName(DEFAULT_LOC_DATA.approverName);
+      setLocApproverPosition(DEFAULT_LOC_DATA.approverPosition);
+      setLocInstitutionName(DEFAULT_LOC_DATA.institutionName);
+      setLocNpwp(DEFAULT_LOC_DATA.npwp);
+      setLocAddress(DEFAULT_LOC_DATA.address);
+      setLocApplicantsText(DEFAULT_LOC_DATA.applicantsText);
+      setLocTuition(DEFAULT_LOC_DATA.tuitionAmount);
+      setLocPaymentDeadline(DEFAULT_LOC_DATA.paymentDeadline);
+      setLocPlace(DEFAULT_LOC_DATA.place);
+    }
   };
 
-  // Shared payload for generators
+  // Shared payload for Penawaran generators
   const documentPayload = {
     templateType,
     currentTemplate,
@@ -215,7 +255,22 @@ export default function SuratPenawaranGenerator() {
 
   // Direct download in authentic Microsoft Word .DOCX format
   const handleDownloadDocx = async () => {
-    await downloadDocx(documentPayload);
+    if (letterCategory === 'penawaran') {
+      await downloadDocx(documentPayload);
+    } else {
+      await downloadLocDocx({
+        approverName: locApproverName,
+        approverPosition: locApproverPosition,
+        institutionName: locInstitutionName,
+        npwp: locNpwp,
+        address: locAddress,
+        applicants: locApplicantsText,
+        tuitionAmount: locTuition,
+        programName: currentLocProgram.name,
+        paymentDeadline: locPaymentDeadline,
+        place: locPlace,
+      });
+    }
   };
 
   return (
@@ -225,12 +280,18 @@ export default function SuratPenawaranGenerator() {
         theme={theme}
         toggleTheme={toggleTheme}
         handleDownloadDocx={handleDownloadDocx}
+        letterCategory={letterCategory}
       />
 
       {/* Main Workspace */}
       <div className="app-container">
         {/* Left Side: Form Controls */}
         <LetterForm
+          // Category
+          letterCategory={letterCategory}
+          handleCategoryChange={handleCategoryChange}
+
+          // Offering props
           templateSelectId={templateSelectId}
           templateType={templateType}
           handleTemplateChange={handleTemplateChange}
@@ -276,6 +337,31 @@ export default function SuratPenawaranGenerator() {
           certOptionId={certOptionId}
           fsCertOption={fsCertOption}
           setFsCertOption={setFsCertOption}
+
+          // LoC props
+          locProgram={locProgram}
+          handleLocProgramChange={handleLocProgramChange}
+          currentLocProgram={currentLocProgram}
+          locApproverName={locApproverName}
+          setLocApproverName={setLocApproverName}
+          locApproverPosition={locApproverPosition}
+          setLocApproverPosition={setLocApproverPosition}
+          locInstitutionName={locInstitutionName}
+          setLocInstitutionName={setLocInstitutionName}
+          locNpwp={locNpwp}
+          setLocNpwp={setLocNpwp}
+          locAddress={locAddress}
+          setLocAddress={setLocAddress}
+          locApplicantsText={locApplicantsText}
+          setLocApplicantsText={setLocApplicantsText}
+          locTuition={locTuition}
+          setLocTuition={setLocTuition}
+          locPaymentDeadline={locPaymentDeadline}
+          setLocPaymentDeadline={setLocPaymentDeadline}
+          locPlace={locPlace}
+          setLocPlace={setLocPlace}
+
+          // Global actions
           handleDownloadDocx={handleDownloadDocx}
           handleReset={handleReset}
         />
@@ -284,6 +370,21 @@ export default function SuratPenawaranGenerator() {
         <LetterPreview
           zoomScale={zoomScale}
           setZoomScale={setZoomScale}
+
+          // Letter Category & LoC
+          letterCategory={letterCategory}
+          currentLocProgram={currentLocProgram}
+          locApproverName={locApproverName}
+          locApproverPosition={locApproverPosition}
+          locInstitutionName={locInstitutionName}
+          locNpwp={locNpwp}
+          locAddress={locAddress}
+          locApplicantsText={locApplicantsText}
+          locTuition={locTuition}
+          locPaymentDeadline={locPaymentDeadline}
+          locPlace={locPlace}
+
+          // Offering props
           currentTemplate={currentTemplate}
           letterDate={letterDate}
           effectiveLetterNumber={effectiveLetterNumber}

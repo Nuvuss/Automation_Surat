@@ -7,7 +7,9 @@ export default function AppHeader({
   theme,
   toggleTheme,
   handleDownloadDocx,
+  letterCategory = 'penawaran',
 }) {
+  const isOffering = letterCategory === 'penawaran';
   return (
     <header className="app-header no-print">
       <div className="brand-wrapper">
@@ -20,7 +22,7 @@ export default function AppHeader({
           priority
         />
         <div className="brand-title-group">
-          <h1>Generator Surat Penawaran RevoU</h1>
+          <h1>{isOffering ? 'Generator Surat Penawaran RevoU' : 'Generator Surat LoC RevoU'}</h1>
         </div>
       </div>
 

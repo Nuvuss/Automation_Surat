@@ -1,8 +1,14 @@
 'use client';
 
 import React from 'react';
+import { OFFERING_PROGRAMS, LOC_PROGRAMS } from '@/config/templates';
 
 export default function LetterForm({
+  // Category
+  letterCategory,
+  handleCategoryChange,
+
+  // Offering letter props
   templateSelectId,
   templateType,
   handleTemplateChange,
@@ -48,51 +54,120 @@ export default function LetterForm({
   certOptionId,
   fsCertOption,
   setFsCertOption,
+
+  // LoC letter props
+  locProgram,
+  handleLocProgramChange,
+  currentLocProgram,
+  locApproverName,
+  setLocApproverName,
+  locApproverPosition,
+  setLocApproverPosition,
+  locInstitutionName,
+  setLocInstitutionName,
+  locNpwp,
+  setLocNpwp,
+  locAddress,
+  setLocAddress,
+  locApplicantsText,
+  setLocApplicantsText,
+  locTuition,
+  setLocTuition,
+  locPaymentDeadline,
+  setLocPaymentDeadline,
+  locPlace,
+  setLocPlace,
+
+  // Global actions
   handleDownloadDocx,
   handleReset,
 }) {
+  const isOffering = letterCategory === 'penawaran';
+
   return (
-        <aside className="editor-sidebar no-print">
-
-          {/* Card 0: Dropdown Pemilihan Tipe Surat untuk AC */}
-          <div className="section-card university-card">
-            <div className="section-header" style={{ marginBottom: '0.6rem' }}>
-              <div className="section-title">
-                <span>Pilih Tipe Surat Penawaran</span>
-              </div>
-              <span className={`program-indicator-pill ${currentTemplate.pillClass || (templateType === 'itb' ? 'pill-itb' : templateType === 'binus' ? 'pill-binus' : 'pill-hr')}`}>
-                {currentTemplate.badge || (templateType === 'itb' ? '🏛️ ITB Aktif' : templateType === 'binus' ? 'Aktif' : '👥 Strategic HR Aktif')}
-              </span>
-            </div>
-
-            <p style={{ fontSize: '0.75rem', color: 'var(--revou-muted)', marginBottom: '0.75rem' }}>
-              Pilih program penawaran yang ingin dibuatkan suratnya:
-            </p>
-
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label htmlFor={templateSelectId} className="form-label" style={{ fontWeight: 700 }}>
-                Program Penawaran
-              </label>
-              <div className="select-interactive-wrapper">
-                <select
-                  id={templateSelectId}
-                  className="form-select select-interactive"
-                  value={templateType}
-                  onChange={(e) => handleTemplateChange(e.target.value)}
-                >
-                  <option value="itb">RevoU X ITB (Data-Driven &amp; AI Decision Making)</option>
-                  <option value="itb_ds">RevoU X ITB (Applied Data Science with AI)</option>
-                  <option value="binus">RevoU X BINUS (Applied AI, Analytics &amp; Automation)</option>
-                  <option value="hr">Strategic HR with AI (RevoU Executive Program)</option>
-                  <option value="fsda">Full Stack Data Analytics (RevoU FSDA)</option>
-                  <option value="fsdm">Full Stack Digital Marketing (RevoU FSDM)</option>
-                  <option value="fsse">Full Stack Software Engineering (RevoU FSSE)</option>
-                </select>
-              </div>
-            </div>
+    <aside className="editor-sidebar no-print">
+      {/* Card 0: Dropdown Pemilihan Jenis Surat & Program */}
+      <div className="section-card university-card">
+        <div className="section-header" style={{ marginBottom: '0.6rem' }}>
+          <div className="section-title">
+            <span>Pilih Jenis Surat</span>
           </div>
+          <span
+            className={`program-indicator-pill ${
+              isOffering
+                ? currentTemplate.pillClass || 'pill-itb'
+                : 'pill-loc'
+            }`}
+          >
+            {isOffering
+              ? currentTemplate.badge || 'Aktif'
+              : '📜 LoC Aktif'}
+          </span>
+        </div>
 
-          {/* Card 1: 3 Parameter Utama sesuai Rule */}
+        <p style={{ fontSize: '0.75rem', color: 'var(--revou-muted)', marginBottom: '0.75rem' }}>
+          Pilih format dokumen resmi yang ingin dibuat:
+        </p>
+
+        {/* Dropdown 1: Jenis Surat */}
+        <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+          <label htmlFor="letter-category-select" className="form-label" style={{ fontWeight: 700 }}>
+            Jenis Surat
+          </label>
+          <div className="select-interactive-wrapper">
+            <select
+              id="letter-category-select"
+              className="form-select select-interactive"
+              value={letterCategory}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+            >
+              <option value="penawaran">Surat Penawaran</option>
+              <option value="loc">Surat LoC ( tambahan )</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Dropdown 2: Program (Tergantung Jenis Surat) */}
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <label htmlFor={templateSelectId} className="form-label" style={{ fontWeight: 700 }}>
+            {isOffering ? 'Program Penawaran' : 'Program Letter of Commitment'}
+          </label>
+          <div className="select-interactive-wrapper">
+            {isOffering ? (
+              <select
+                id={templateSelectId}
+                className="form-select select-interactive"
+                value={templateType}
+                onChange={(e) => handleTemplateChange(e.target.value)}
+              >
+                {OFFERING_PROGRAMS.map((prog) => (
+                  <option key={prog.id} value={prog.id}>
+                    {prog.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <select
+                id={templateSelectId}
+                className="form-select select-interactive"
+                value={locProgram}
+                onChange={(e) => handleLocProgramChange(e.target.value)}
+              >
+                {LOC_PROGRAMS.map((prog) => (
+                  <option key={prog.id} value={prog.id}>
+                    {prog.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ================= FORM KHUSUS SURAT PENAWARAN ================= */}
+      {isOffering && (
+        <>
+          {/* Card 1: 3 Parameter Utama */}
           <div className="section-card primary-card">
             <div className="section-header">
               <div className="section-title">
@@ -220,8 +295,7 @@ export default function LetterForm({
             </div>
           </div>
 
-
-          {/* Card 2: Pengaturan Tanggal, Nomor & Detail Surat (Langsung Terbuka) */}
+          {/* Card 2: Pengaturan Tanggal, Nomor & Detail Surat */}
           <div className="section-card">
             <div className="section-header">
               <div className="section-title">
@@ -337,31 +411,123 @@ export default function LetterForm({
               </div>
             )}
           </div>
+        </>
+      )}
 
-          {/* Action Button: DOCX & PDF */}
-          <div className="section-card" style={{ textAlign: 'center' }}>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              style={{ width: '100%', padding: '0.65rem', fontSize: '0.88rem' }}
-              onClick={handleDownloadDocx}
-            >
-              📥 Unduh Format .DOCX (Word)
-            </button>
+      {/* ================= FORM KHUSUS SURAT LOC ================= */}
+      {!isOffering && (
+        <>
+          {/* Card: Peserta & Komitmen Pembayaran */}
+          <div className="section-card primary-card">
+            <div className="section-header">
+              <div className="section-title">
+                <span>Data Komitmen LoC</span>
+              </div>
+              <span className="badge-tag">Wajib Diisi</span>
+            </div>
 
-            <div style={{ marginTop: '0.65rem' }}>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                style={{ width: '100%', fontSize: '0.78rem' }}
-                onClick={handleReset}
-              >
-                🔄 Reset ke Contoh Asli ({currentTemplate.name})
-              </button>
+            <p style={{ fontSize: '0.74rem', color: 'var(--revou-muted)', marginBottom: '0.85rem' }}>
+              ℹ️ Bagian identitas penandatangan (Name, Position, Institution, NPWP, Address) dibuat statis sesuai template resmi. Silakan isi data komitmen di bawah ini:
+            </p>
+
+            <div className="form-group">
+              <label className="form-label">
+                <span>Nama Perusahaan (declare that ...)</span>
+                <span className="helper">Contoh: PT ABC</span>
+              </label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Contoh: PT ABC"
+                value={locInstitutionName}
+                onChange={(e) => setLocInstitutionName(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <span>Nama Peserta (Applicant/s)</span>
+                <span className="helper">Tulis 1 nama per baris (akan otomatis bernomor)</span>
+              </label>
+              <textarea
+                className="form-input"
+                rows={3}
+                placeholder="1. Zakki&#10;2. Pita"
+                value={locApplicantsText}
+                onChange={(e) => setLocApplicantsText(e.target.value)}
+                style={{ resize: 'vertical' }}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <span>Total Biaya Pendaftaran (Tuition)</span>
+                <span className="helper">Contoh: IDR 25,500,000</span>
+              </label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Contoh: IDR 25,500,000"
+                value={locTuition}
+                onChange={(e) => setLocTuition(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <span>Batas Tanggal Pembayaran (Deadline)</span>
+                <span className="helper">Contoh: [Date of Payment]</span>
+              </label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Contoh: [Date of Payment]"
+                value={locPaymentDeadline}
+                onChange={(e) => setLocPaymentDeadline(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <span>Tempat / Kota (Place)</span>
+                <span className="helper">Contoh: (Place) atau Jakarta</span>
+              </label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Contoh: (Place)"
+                value={locPlace}
+                onChange={(e) => setLocPlace(e.target.value)}
+              />
             </div>
           </div>
+        </>
+      )}
 
-        </aside>
+      {/* Action Buttons: Unduh DOCX & Reset */}
+      <div className="section-card" style={{ textAlign: 'center' }}>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          style={{ width: '100%', padding: '0.65rem', fontSize: '0.88rem' }}
+          onClick={handleDownloadDocx}
+        >
+          {isOffering
+            ? '📥 Unduh Format .DOCX (Surat Penawaran)'
+            : '📥 Unduh Format .DOCX (Letter of Commitment)'}
+        </button>
 
+        <div style={{ marginTop: '0.65rem' }}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            style={{ width: '100%', fontSize: '0.78rem' }}
+            onClick={handleReset}
+          >
+            🔄 Reset ke Default ({isOffering ? currentTemplate.name : currentLocProgram?.name || 'LoC'})
+          </button>
+        </div>
+      </div>
+    </aside>
   );
 }

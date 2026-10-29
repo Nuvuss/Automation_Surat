@@ -443,6 +443,18 @@ body {
   border-color: #9333EA;
 }
 
+.pill-loc {
+  background: #E0E7FF;
+  color: #3730A3;
+  border: 1px solid #C7D2FE;
+}
+
+[data-theme="dark"] .pill-loc {
+  background: #312E81;
+  color: #E0E7FF;
+  border-color: #4F46E5;
+}
+
 .section-header {
   display: flex;
   align-items: center;
@@ -1131,6 +1143,106 @@ input:checked+.slider:before {
   border-radius: 2px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+}
+
+/* =====================================================================
+   Letter of Commitment (LoC) Styles
+   ===================================================================== */
+.loc-sheet {
+  font-family: Arial, Helvetica, sans-serif !important;
+  color: #111827;
+  display: flex;
+  flex-direction: column;
+}
+
+.loc-header-box {
+  text-align: center;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 2.2rem;
+  color: #111827;
+}
+
+.loc-title {
+  text-align: center;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 2.2rem;
+  color: #111827;
+}
+
+.loc-intro {
+  font-size: 0.95rem;
+  margin-bottom: 1.1rem;
+  line-height: 1.5;
+}
+
+.loc-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.loc-info-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.loc-label {
+  width: 190px;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.loc-colon {
+  width: 20px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.loc-value {
+  flex: 1;
+}
+
+.loc-applicants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.loc-applicant-item {
+  font-weight: 500;
+}
+
+.loc-declaration {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-align: justify;
+  margin-top: 1.2rem;
+  margin-bottom: 4rem;
+}
+
+.loc-signature-block {
+  margin-left: auto;
+  text-align: right;
+  font-size: 0.95rem;
+  min-width: 250px;
+}
+
+.loc-place-date {
+  margin-bottom: 0.5rem;
+}
+
+.loc-stamp-space {
+  height: 70px;
+}
+
+.loc-signer-name {
+  color: #1E3A8A;
+  font-weight: 500;
 }
 
 /* PRINT MEDIA STYLES - CRITICAL FOR CLEAN A4 EXPORT */
