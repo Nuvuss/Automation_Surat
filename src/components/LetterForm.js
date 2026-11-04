@@ -75,6 +75,8 @@ export default function LetterForm({
   setLocTuition,
   locPaymentDeadline,
   setLocPaymentDeadline,
+  locBatchDate,
+  setLocBatchDate,
   locPlace,
   setLocPlace,
 
@@ -483,6 +485,20 @@ export default function LetterForm({
                 placeholder="Contoh: [Date of Payment]"
                 value={locPaymentDeadline}
                 onChange={(e) => setLocPaymentDeadline(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <span>Jadwal / Tanggal Batch (Batch Date)</span>
+                <span className="helper">Contoh: 22 February 2027</span>
+              </label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Contoh: 22 February 2027"
+                value={locBatchDate}
+                onChange={(e) => setLocBatchDate(e.target.value)}
               />
             </div>
 
