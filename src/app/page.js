@@ -94,7 +94,6 @@ export default function SuratPenawaranGenerator() {
   const [locAddress, setLocAddress] = useState(DEFAULT_LOC_DATA.address);
   const [locApplicantsText, setLocApplicantsText] = useState(DEFAULT_LOC_DATA.applicantsText);
   const [locTuition, setLocTuition] = useState(DEFAULT_LOC_DATA.tuitionAmount);
-  const [locPaymentDeadline, setLocPaymentDeadline] = useState(DEFAULT_LOC_DATA.paymentDeadline);
   const [locBatchDate, setLocBatchDate] = useState(DEFAULT_LOC_DATA.batchDate);
   const [locPlace, setLocPlace] = useState(DEFAULT_LOC_DATA.place);
 
@@ -199,7 +198,6 @@ export default function SuratPenawaranGenerator() {
       setLocAddress(DEFAULT_LOC_DATA.address);
       setLocApplicantsText(DEFAULT_LOC_DATA.applicantsText);
       setLocTuition(DEFAULT_LOC_DATA.tuitionAmount);
-      setLocPaymentDeadline(DEFAULT_LOC_DATA.paymentDeadline);
       setLocBatchDate(DEFAULT_LOC_DATA.batchDate);
       setLocPlace(DEFAULT_LOC_DATA.place);
     }
@@ -269,7 +267,6 @@ export default function SuratPenawaranGenerator() {
         applicants: locApplicantsText,
         tuitionAmount: locTuition,
         programName: currentLocProgram.name,
-        paymentDeadline: locPaymentDeadline,
         batchDate: locBatchDate,
         place: locPlace,
       });
@@ -359,8 +356,6 @@ export default function SuratPenawaranGenerator() {
           setLocApplicantsText={setLocApplicantsText}
           locTuition={locTuition}
           setLocTuition={setLocTuition}
-          locPaymentDeadline={locPaymentDeadline}
-          setLocPaymentDeadline={setLocPaymentDeadline}
           locBatchDate={locBatchDate}
           setLocBatchDate={setLocBatchDate}
           locPlace={locPlace}
@@ -386,7 +381,6 @@ export default function SuratPenawaranGenerator() {
           locAddress={locAddress}
           locApplicantsText={locApplicantsText}
           locTuition={locTuition}
-          locPaymentDeadline={locPaymentDeadline}
           locBatchDate={locBatchDate}
           locPlace={locPlace}
 

@@ -37,7 +37,6 @@ export const DEFAULT_LOC_DATA = {
   applicantsText: '1. Zakki\n2. Pita',
   tuitionAmount: 'IDR 25,500,000',
   programId: 'fsdm',
-  paymentDeadline: '[Date of Payment]',
   batchDate: '22 February 2027',
   place: 'Jakarta',
 };

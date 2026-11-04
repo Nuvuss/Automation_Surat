@@ -1925,7 +1925,6 @@ export async function downloadLocDocx({
   applicants = [],
   tuitionAmount,
   programName,
-  paymentDeadline,
   batchDate,
   place
 }) {
@@ -1962,7 +1961,6 @@ export async function downloadLocDocx({
     const effectiveInstitution = institutionName?.trim() || 'PT ABC';
     const effectiveTuition = tuitionAmount?.trim() || 'IDR 25,500,000';
     const effectiveProgram = programName?.trim() || 'Full-Stack Digital Marketing';
-    const effectiveDeadline = paymentDeadline?.trim() || '[Date of Payment]';
     const effectiveBatch = batchDate?.trim() || '22 February 2027';
     const effectivePlace = place?.trim() || 'Jakarta';
 
@@ -2143,7 +2141,7 @@ export async function downloadLocDocx({
                 new TextRun({ text: ' agrees to pay the enrollment tuition for the applicants in the amount of ', size: 22 }),
                 new TextRun({ text: effectiveTuition, bold: true, size: 22 }),
                 new TextRun({ text: ' on ', bold: true, size: 22 }),
-                new TextRun({ text: effectiveDeadline, bold: true, color: '0000FF', size: 22 }),
+                new TextRun({ text: '[Date of Payment]', bold: true, color: '0000FF', size: 22 }),
                 new TextRun({ text: ' at the latest', bold: true, size: 22 }),
                 new TextRun({ text: ' for the ', size: 22 }),
                 new TextRun({ text: effectiveProgram, bold: true, size: 22 }),

@@ -18,7 +18,6 @@ export default function LetterPreview({
   locAddress,
   locApplicantsText,
   locTuition,
-  locPaymentDeadline,
   locBatchDate,
   locPlace,
 
@@ -43,7 +42,6 @@ export default function LetterPreview({
   const effectiveInstitution = locInstitutionName?.trim() || 'PT ABC';
   const effectiveTuition = locTuition?.trim() || 'IDR 25,500,000';
   const effectiveProgram = currentLocProgram?.name || 'Full-Stack Digital Marketing';
-  const effectiveDeadline = locPaymentDeadline?.trim() || '[Date of Payment]';
   const effectiveBatch = locBatchDate?.trim() || '22 February 2027';
   const effectivePlace = locPlace?.trim() || 'Jakarta';
 
@@ -173,7 +171,7 @@ export default function LetterPreview({
 
               {/* Commitment Declaration */}
               <p className="loc-declaration">
-                declare that <HighlightSpan><strong>{effectiveInstitution}</strong></HighlightSpan> agrees to pay the enrollment tuition for the applicants in the amount of <HighlightSpan><strong>{effectiveTuition}</strong></HighlightSpan> <strong>on <span style={{ color: '#0000FF' }}>{effectiveDeadline}</span> at the latest</strong> for the <HighlightSpan><strong>{effectiveProgram}</strong></HighlightSpan> <strong>batch </strong><HighlightSpan><strong>{effectiveBatch}</strong></HighlightSpan>. If the company has not paid by the deadline, the institution agrees to cancel the applicant’s participation in the program.
+                declare that <HighlightSpan><strong>{effectiveInstitution}</strong></HighlightSpan> agrees to pay the enrollment tuition for the applicants in the amount of <HighlightSpan><strong>{effectiveTuition}</strong></HighlightSpan> <strong>on <span style={{ color: '#0000FF' }}>[Date of Payment]</span> at the latest</strong> for the <HighlightSpan><strong>{effectiveProgram}</strong></HighlightSpan> <strong>batch </strong><HighlightSpan><strong>{effectiveBatch}</strong></HighlightSpan>. If the company has not paid by the deadline, the institution agrees to cancel the applicant’s participation in the program.
               </p>
 
               {/* Signature Section */}

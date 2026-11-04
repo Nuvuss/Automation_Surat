@@ -73,8 +73,6 @@ export default function LetterForm({
   setLocApplicantsText,
   locTuition,
   setLocTuition,
-  locPaymentDeadline,
-  setLocPaymentDeadline,
   locBatchDate,
   setLocBatchDate,
   locPlace,
@@ -471,20 +469,6 @@ export default function LetterForm({
                 placeholder="Contoh: IDR 25,500,000"
                 value={locTuition}
                 onChange={(e) => setLocTuition(e.target.value)}
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">
-                <span>Batas Tanggal Pembayaran (Deadline)</span>
-                <span className="helper">Contoh: [Date of Payment]</span>
-              </label>
-              <input
-                type="text"
-                className="form-input"
-                placeholder="Contoh: [Date of Payment]"
-                value={locPaymentDeadline}
-                onChange={(e) => setLocPaymentDeadline(e.target.value)}
               />
             </div>
 
