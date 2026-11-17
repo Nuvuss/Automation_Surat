@@ -32,6 +32,8 @@ export default function LetterPreview({
   templateType,
   startDate,
   normalPrice,
+  promoPrice,
+  additionalNote,
   fullPromoPrice,
   effectiveCertification,
   signerName,
@@ -191,7 +193,7 @@ export default function LetterPreview({
             {/* ===================== HALAMAN 1 ===================== */}
             <div className="page-wrapper">
               <div className="page-number-pill no-print">Halaman 1 dari 2 ({currentTemplate.name})</div>
-              <article className="a4-sheet" id="page-1">
+              <article className={`a4-sheet ${templateType === 'ui_fin' ? 'sheet-compact' : ''}`} id="page-1">
                 {/* Header */}
                 <header className="letter-header">
                   <Image
@@ -310,6 +312,98 @@ export default function LetterPreview({
                       </li>
                       <li>
                         Mempresentasikan dan mempertahankan hasil <em>capstone project</em> di hadapan panel praktisi industri.
+                      </li>
+                    </ul>
+                  </>
+                ) : templateType === 'ui_fin' ? (
+                  <>
+                    <p className="letter-paragraph">
+                      Perkenalkan, kami dari RevoU (PT Revolusi Cita Edukasi), perusahaan <em>ed-tech</em> yang fokus pada pengembangan kompetensi profesional di bidang digital. Bersama Universitas Indonesia (UI), RevoU menghadirkan program <em>upskilling</em> yang memadukan pembelajaran akademis dengan praktik dan kebutuhan dunia industri.
+                    </p>
+
+                    <p className="letter-paragraph">
+                      Peran tim finance kini makin dekat dengan pengambilan keputusan bisnis, dan AI mulai mengubah cara tim finance bekerja. Karena itu, kami ingin menawarkan <strong>program pengembangan kompetensi</strong> untuk dipertimbangkan oleh <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan>{effectiveEmployee && effectiveEmployee !== '______' ? <> bagi karyawan Bapak/Ibu: <HighlightSpan><strong>{effectiveEmployee}</strong></HighlightSpan>.</> : ' bagi karyawan Bapak/Ibu.'}
+                    </p>
+
+                    <p className="letter-paragraph">
+                      <strong>Program AI-Enabled Strategic Finance (RevoU X UI)</strong> dirancang untuk para profesional finance yang ingin berperan lebih strategis di organisasinya. Peserta belajar memakai AI dalam pekerjaan finance sehari-hari dan langsung menerapkannya pada kasus di perusahaan masing-masing.
+                    </p>
+
+                    <div className="letter-paragraph" style={{ marginBottom: '6px', fontWeight: 'bold' }}>
+                      Selama program berlangsung, peserta akan:
+                    </div>
+
+                    <ul className="letter-list">
+                      <li>
+                        Menilai keputusan finance dari sisi akuntansi, pajak, dan hukum sekaligus, memakai kasus bisnis Indonesia.
+                      </li>
+                      <li>
+                        Membangun empat asisten AI tanpa coding (capital structure, pajak, monthly reporting, deal check) yang tetap dapat dipakai di kantor setelah program selesai.
+                      </li>
+                      <li>
+                        Menyusun model keuangan dan forecast dengan bantuan AI, lalu memeriksa hasilnya sebelum dibawa ke manajemen.
+                      </li>
+                      <li>
+                        Mengerjakan capstone yang akan dipresentasikan di depan dosen UI dan panel.
+                      </li>
+                    </ul>
+
+                    {/* Detail Program for UI Finance on Page 1 */}
+                    <div className="section-subtitle">
+                      <strong>Detail Program:</strong>
+                    </div>
+                    <ul className="detail-program-list">
+                      <li className="detail-item-row">
+                        <span className="detail-item-bullet">•</span>
+                        <span className="detail-item-label">Durasi</span>
+                        <span className="detail-item-colon">:</span>
+                        <div className="detail-item-value">
+                          13 minggu, mulai <HighlightSpan>{startDate}</HighlightSpan>
+                        </div>
+                      </li>
+                      <li className="detail-item-row">
+                        <span className="detail-item-bullet">•</span>
+                        <span className="detail-item-label">Format</span>
+                        <span className="detail-item-colon">:</span>
+                        <div className="detail-item-value">
+                          {currentTemplate.format}
+                        </div>
+                      </li>
+                      <li className="detail-item-row">
+                        <span className="detail-item-bullet">•</span>
+                        <span className="detail-item-label">Jadwal Sesi</span>
+                        <span className="detail-item-colon">:</span>
+                        <div className="detail-item-value">
+                          {currentTemplate.onlineSchedule}
+                        </div>
+                      </li>
+                      <li className="detail-item-row">
+                        <span className="detail-item-bullet">•</span>
+                        <span className="detail-item-label">Sertifikasi</span>
+                        <span className="detail-item-colon">:</span>
+                        <div className="detail-item-value">
+                          {currentTemplate.certification}
+                        </div>
+                      </li>
+                      <li className="detail-item-row">
+                        <span className="detail-item-bullet">•</span>
+                        <span className="detail-item-label">Biaya</span>
+                        <span className="detail-item-colon">:</span>
+                        <div className="detail-item-value">
+                          <span className="price-strike">{normalPrice}</span>{' '}
+                          <HighlightSpan>
+                            {additionalNote && additionalNote.includes('early bird') ? (
+                              <>
+                                <strong>{promoPrice}</strong>{' '}
+                                {additionalNote.split('early bird')[0]}
+                                <em>early bird</em>
+                                {additionalNote.split('early bird')[1]}
+                              </>
+                            ) : (
+                              <strong>{fullPromoPrice}</strong>
+                            )}
+                          </HighlightSpan>
+                        </div>
                       </li>
                     </ul>
                   </>
@@ -537,7 +631,7 @@ export default function LetterPreview({
             {/* ===================== HALAMAN 2 ===================== */}
             <div className="page-wrapper">
               <div className="page-number-pill no-print">Halaman 2 dari 2 ({currentTemplate.name})</div>
-              <article className="a4-sheet" id="page-2">
+              <article className={`a4-sheet ${templateType === 'ui_fin' ? 'sheet-compact' : ''}`} id="page-2">
                 {/* Header (replicated on page 2) */}
                 <header className="letter-header">
                   <Image
@@ -606,6 +700,35 @@ export default function LetterPreview({
 
                     <p className="letter-paragraph">
                       Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan> dalam mendukung pengembangan kompetensi karyawan dan kapabilitas data &amp; AI di organisasi.
+                    </p>
+                  </>
+                ) : templateType === 'ui_fin' ? (
+                  <>
+                    {/* Manfaat bagi Organisasi */}
+                    <div className="section-subtitle">
+                      <strong>Manfaat bagi Organisasi:</strong>
+                    </div>
+                    <ul className="letter-list" style={{ marginBottom: '14px' }}>
+                      <li>
+                        Tim finance yang mampu menimbang keputusan pendanaan dan transaksi antarperusahaan secara lintas fungsi
+                      </li>
+                      <li>
+                        Asisten AI siap pakai untuk pekerjaan finance rutin seperti monthly reporting dan pengecekan transaksi
+                      </li>
+                      <li>
+                        Penggunaan AI yang lebih aman di tim finance, dengan kebiasaan memverifikasi output serta memahami privasi data dan jejak audit
+                      </li>
+                      <li>
+                        Karyawan yang lebih siap mengisi peran seperti Finance Manager, Head of FP&A, Financial Controller, atau Head of Finance
+                      </li>
+                    </ul>
+
+                    <p className="letter-paragraph">
+                      Kami percaya program ini dapat memberikan nilai tambah bagi <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan>, khususnya dalam memperkuat kapabilitas tim finance menghadapi kebutuhan bisnis yang semakin kompleks.
+                    </p>
+
+                    <p className="letter-paragraph">
+                      Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat berkolaborasi dengan <HighlightSpan><strong>{effectiveCompany}</strong></HighlightSpan> dalam mendukung pengembangan kompetensi karyawan.
                     </p>
                   </>
                 ) : templateType === 'hr' ? (

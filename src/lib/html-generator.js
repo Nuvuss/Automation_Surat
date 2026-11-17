@@ -80,6 +80,67 @@ RevoU (PT Revolusi Cita Edukasi)
 `;
   }
 
+  if (templateType === 'ui_fin') {
+    return `PT REVOLUSI CITA EDUKASI
+Menara Rajawali, Ground Floor
+Jl. DR. Ide Anak Agung Gde Agung RT.5/RW.2, Kuningan
+Jakarta Selatan 12950
+
+${letterDate}
+
+Nomor : ${effectiveLetterNumber}
+Perihal : ${currentTemplate.subject}
+
+Kepada Yth.
+${effectiveRole}
+${effectiveCompany}
+${effectiveLocation}
+
+Bapak/Ibu yang kami hormati,
+
+Semoga Bapak/Ibu dalam keadaan sehat dan baik.
+
+Perkenalkan, kami dari RevoU (PT Revolusi Cita Edukasi), perusahaan ed-tech yang fokus pada pengembangan kompetensi profesional di bidang digital. Bersama Universitas Indonesia (UI), RevoU menghadirkan program upskilling yang memadukan pembelajaran akademis dengan praktik dan kebutuhan dunia industri.
+
+Peran tim finance kini makin dekat dengan pengambilan keputusan bisnis, dan AI mulai mengubah cara tim finance bekerja. Karena itu, kami ingin menawarkan program pengembangan kompetensi untuk dipertimbangkan oleh ${effectiveCompany}${effectiveEmployee && effectiveEmployee !== '______' ? ` bagi karyawan Bapak/Ibu: ${effectiveEmployee}.` : ' bagi karyawan Bapak/Ibu.'}
+
+Program AI-Enabled Strategic Finance (RevoU X UI) dirancang untuk para profesional finance yang ingin berperan lebih strategis di organisasinya. Peserta belajar memakai AI dalam pekerjaan finance sehari-hari dan langsung menerapkannya pada kasus di perusahaan masing-masing.
+
+Selama program berlangsung, peserta akan:
+● Menilai keputusan finance dari sisi akuntansi, pajak, dan hukum sekaligus, memakai kasus bisnis Indonesia.
+● Membangun empat asisten AI tanpa coding (capital structure, pajak, monthly reporting, deal check) yang tetap dapat dipakai di kantor setelah program selesai.
+● Menyusun model keuangan dan forecast dengan bantuan AI, lalu memeriksa hasilnya sebelum dibawa ke manajemen.
+● Mengerjakan capstone yang akan dipresentasikan di depan dosen UI dan panel.
+
+Detail Program:
+● Durasi : 13 minggu, mulai ${startDate}
+● Format : ${currentTemplate.format}
+● Jadwal Sesi : ${currentTemplate.onlineSchedule}
+● Sertifikasi : ${currentTemplate.certification}
+● Biaya : ${normalPrice} ${fullPromoPrice}
+
+Manfaat bagi Organisasi:
+● Tim finance yang mampu menimbang keputusan pendanaan dan transaksi antarperusahaan secara lintas fungsi
+● Asisten AI siap pakai untuk pekerjaan finance rutin seperti monthly reporting dan pengecekan transaksi
+● Penggunaan AI yang lebih aman di tim finance, dengan kebiasaan memverifikasi output serta memahami privasi data dan jejak audit
+● Karyawan yang lebih siap mengisi peran seperti Finance Manager, Head of FP&A, Financial Controller, atau Head of Finance
+
+Kami percaya program ini dapat memberikan nilai tambah bagi ${effectiveCompany}, khususnya dalam memperkuat kapabilitas tim finance menghadapi kebutuhan bisnis yang semakin kompleks.
+
+Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat berkolaborasi dengan ${effectiveCompany} dalam mendukung pengembangan kompetensi karyawan.
+
+Salam hormat,
+
+
+
+__________________________
+${signerName}
+${signerEmail}
+${signerTitle}
+RevoU (PT Revolusi Cita Edukasi)
+`;
+  }
+
   if (templateType === 'hr') {
     return `PT REVOLUSI CITA EDUKASI
 Menara Rajawali, Ground Floor
@@ -575,6 +636,44 @@ export function generateGoogleDocsHtml({
         </p>
         <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
           Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan <span style="${highlightBg}"><strong>${effectiveCompany}</strong></span> dalam mendukung pengembangan kompetensi karyawan dan kapabilitas data &amp; AI di organisasi.
+        </p>
+      ` : templateType === 'ui_fin' ? `
+        <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+          Perkenalkan, kami dari RevoU (PT Revolusi Cita Edukasi), perusahaan <em>ed-tech</em> yang fokus pada pengembangan kompetensi profesional di bidang digital. Bersama Universitas Indonesia (UI), RevoU menghadirkan program <em>upskilling</em> yang memadukan pembelajaran akademis dengan praktik dan kebutuhan dunia industri.
+        </p>
+        <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+          Peran tim finance kini makin dekat dengan pengambilan keputusan bisnis, dan AI mulai mengubah cara tim finance bekerja. Karena itu, kami ingin menawarkan <strong>program pengembangan kompetensi</strong> untuk dipertimbangkan oleh <span style="${highlightBg}"><strong>${effectiveCompany}</strong></span>${effectiveEmployee && effectiveEmployee !== '______' ? ` bagi karyawan Bapak/Ibu: <span style="${highlightBg}"><strong>${effectiveEmployee}</strong></span>.` : ' bagi karyawan Bapak/Ibu.'}
+        </p>
+        <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+          <strong>Program AI-Enabled Strategic Finance (RevoU X UI)</strong> dirancang untuk para profesional finance yang ingin berperan lebih strategis di organisasinya. Peserta belajar memakai AI dalam pekerjaan finance sehari-hari dan langsung menerapkannya pada kasus di perusahaan masing-masing.
+        </p>
+        <p style="margin-bottom: 4pt; font-size: 11pt; font-weight: bold;">Selama program berlangsung, peserta akan:</p>
+        <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
+          <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Menilai keputusan finance dari sisi akuntansi, pajak, dan hukum sekaligus, memakai kasus bisnis Indonesia.</li>
+          <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Membangun empat asisten AI tanpa coding (capital structure, pajak, monthly reporting, deal check) yang tetap dapat dipakai di kantor setelah program selesai.</li>
+          <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Menyusun model keuangan dan forecast dengan bantuan AI, lalu memeriksa hasilnya sebelum dibawa ke manajemen.</li>
+          <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Mengerjakan capstone yang akan dipresentasikan di depan dosen UI dan panel.</li>
+        </ul>
+        <p style="font-weight: bold; margin-top: 10pt; margin-bottom: 4pt; font-size: 11pt;">Detail Program:</p>
+        <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
+          <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Durasi :</strong> 13 minggu, mulai <span style="${highlightBg}">${startDate}</span></li>
+          <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Format :</strong> ${currentTemplate.format}</li>
+          <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Jadwal Sesi :</strong> ${currentTemplate.onlineSchedule}</li>
+          <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Sertifikasi :</strong> ${currentTemplate.certification}</li>
+          <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Biaya :</strong> <span style="text-decoration: line-through; color: #4B5563;">${normalPrice}</span> <span style="${highlightBg}"><strong>${promoPrice || 'Rp13.500.000'}</strong> (harga khusus <em>early bird</em>)</span></li>
+        </ul>
+        <p style="font-weight: bold; margin-top: 10pt; margin-bottom: 4pt; font-size: 11pt;">Manfaat bagi Organisasi:</p>
+        <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">
+          <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Tim finance yang mampu menimbang keputusan pendanaan dan transaksi antarperusahaan secara lintas fungsi</li>
+          <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Asisten AI siap pakai untuk pekerjaan finance rutin seperti monthly reporting dan pengecekan transaksi</li>
+          <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Penggunaan AI yang lebih aman di tim finance, dengan kebiasaan memverifikasi output serta memahami privasi data dan jejak audit</li>
+          <li style="text-align: justify; margin-bottom: 3pt; font-size: 11pt;">Karyawan yang lebih siap mengisi peran seperti Finance Manager, Head of FP&A, Financial Controller, atau Head of Finance</li>
+        </ul>
+        <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+          Kami percaya program ini dapat memberikan nilai tambah bagi <span style="${highlightBg}"><strong>${effectiveCompany}</strong></span>, khususnya dalam memperkuat kapabilitas tim finance menghadapi kebutuhan bisnis yang semakin kompleks.
+        </p>
+        <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">
+          Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat berkolaborasi dengan <span style="${highlightBg}"><strong>${effectiveCompany}</strong></span> dalam mendukung pengembangan kompetensi karyawan.
         </p>
       ` : templateType === 'hr' ? `
         <p style="text-align: justify; margin-bottom: 10pt; font-size: 11pt; line-height: 1.45;">

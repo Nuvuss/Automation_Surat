@@ -443,6 +443,18 @@ body {
   border-color: #9333EA;
 }
 
+.pill-ui-fin {
+  background: #FEF9C3;
+  color: #854D0E;
+  border: 1px solid #FDE047;
+}
+
+[data-theme="dark"] .pill-ui-fin {
+  background: #713F12;
+  color: #FEF08A;
+  border-color: #EAB308;
+}
+
 .pill-loc {
   background: #E0E7FF;
   color: #3730A3;
@@ -932,6 +944,115 @@ input:checked+.slider:before {
   overflow: hidden;
 }
 
+/* Compact spacing for dense templates like UI Finance (ui_fin) to ensure all content fits on A4 */
+.sheet-compact.a4-sheet {
+  padding: 14mm 20mm 14mm 20mm;
+}
+
+.sheet-compact .letter-header {
+  margin-bottom: 12px;
+}
+
+.sheet-compact .letter-date-row {
+  margin-bottom: 8px;
+}
+
+.sheet-compact .letter-ref-block {
+  margin-bottom: 8px;
+}
+
+.sheet-compact .letter-recipient-block {
+  margin-bottom: 12px;
+}
+
+.sheet-compact .letter-salutation {
+  margin-bottom: 10px;
+}
+
+.sheet-compact .letter-paragraph {
+  margin-bottom: 8px;
+  line-height: 1.38;
+}
+
+.sheet-compact .letter-list {
+  list-style: none;
+  padding-left: 24px;
+  margin: 3px 0 6px 0;
+}
+
+.sheet-compact .letter-list li {
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 2.5px;
+  font-size: 11pt;
+  line-height: 1.35;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.sheet-compact .letter-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  font-size: 12pt;
+  line-height: 1.2;
+  color: #111827;
+}
+
+/* Detail Program Grid-Aligned List */
+.detail-program-list {
+  list-style: none;
+  padding-left: 24px !important;
+  margin: 3px 0 6px 0 !important;
+}
+
+.detail-program-list li.detail-item-row {
+  display: flex !important;
+  align-items: flex-start !important;
+  padding-left: 0 !important;
+  margin-bottom: 2.5px !important;
+  font-size: 11pt;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.detail-program-list li.detail-item-row::before {
+  display: none !important;
+}
+
+.detail-item-bullet {
+  width: 16px;
+  flex-shrink: 0;
+  font-size: 12pt;
+  line-height: 1.25;
+  color: #111827;
+}
+
+.detail-item-label {
+  font-weight: 700;
+  width: 96px;
+  flex-shrink: 0;
+  color: #111827;
+}
+
+.detail-item-colon {
+  width: 14px;
+  flex-shrink: 0;
+  text-align: left;
+  color: #111827;
+}
+
+.detail-item-value {
+  flex-grow: 1;
+  color: #111827;
+}
+
+.sheet-compact .section-subtitle {
+  margin-top: 6px;
+  margin-bottom: 3px;
+}
+
 /* Official Letter Header */
 .letter-header {
   display: flex;
@@ -1312,6 +1433,10 @@ input:checked+.slider:before {
     margin: 0 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  .sheet-compact.a4-sheet {
+    padding: 14mm 20mm 14mm 20mm !important;
   }
 
   /* Ensure highlights only show in preview, not when printed or downloaded as PDF */

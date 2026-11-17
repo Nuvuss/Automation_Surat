@@ -395,6 +395,8 @@ export default function SuratPenawaranGenerator() {
           templateType={templateType}
           startDate={startDate}
           normalPrice={normalPrice}
+          promoPrice={promoPrice}
+          additionalNote={additionalNote}
           fullPromoPrice={fullPromoPrice}
           effectiveCertification={effectiveCertification}
           signerName={signerName}

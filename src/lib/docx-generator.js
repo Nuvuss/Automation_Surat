@@ -273,7 +273,7 @@ export async function downloadDocx({
         ],
       }),
       new Paragraph({
-        spacing: { after: 260, line: 260 },
+        spacing: { after: templateType === 'ui_fin' ? 140 : 260, line: 260 },
         children: [
           new TextRun({
             text: effectiveLocation,
@@ -282,14 +282,14 @@ export async function downloadDocx({
         ],
       }),
       new Paragraph({
-        spacing: { after: 260, line: 260 },
+        spacing: { after: templateType === 'ui_fin' ? 140 : 260, line: 260 },
         children: [
           new TextRun({ text: 'Bapak/Ibu yang kami hormati,', size: 22 }),
         ],
       }),
       ...(templateType !== 'itb_ds' ? [
         new Paragraph({
-          spacing: { after: 200, line: 276 },
+          spacing: { after: templateType === 'ui_fin' ? 140 : 200, line: templateType === 'ui_fin' ? 250 : 276 },
           children: [
             new TextRun({ text: 'Semoga Bapak/Ibu dalam keadaan sehat dan baik.', size: 22 }),
           ],
@@ -486,6 +486,170 @@ export async function downloadDocx({
             new TextRun({ text: 'data product yang aplikatif', bold: true, size: 22 }),
             new TextRun({ text: ' berdasarkan permasalahan nyata di lingkungan kerja.', size: 22 }),
           ]
+        })
+      );
+    } else if (templateType === 'ui_fin') {
+      bodyParagraphs.push(
+        new Paragraph({
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { after: 120, line: 260 },
+          children: [
+            new TextRun({ text: 'Perkenalkan, kami dari RevoU (PT Revolusi Cita Edukasi), perusahaan ', size: 22 }),
+            new TextRun({ text: 'ed-tech', italics: true, size: 22 }),
+            new TextRun({ text: ' yang fokus pada pengembangan kompetensi profesional di bidang digital. Bersama Universitas Indonesia (UI), RevoU menghadirkan program ', size: 22 }),
+            new TextRun({ text: 'upskilling', italics: true, size: 22 }),
+            new TextRun({ text: ' yang memadukan pembelajaran akademis dengan praktik dan kebutuhan dunia industri.', size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { after: 120, line: 260 },
+          children: [
+            new TextRun({ text: 'Peran tim finance kini makin dekat dengan pengambilan keputusan bisnis, dan AI mulai mengubah cara tim finance bekerja. Karena itu, kami ingin menawarkan ', size: 22 }),
+            new TextRun({ text: 'program pengembangan kompetensi', bold: true, size: 22 }),
+            new TextRun({ text: ' untuk dipertimbangkan oleh ', size: 22 }),
+            new TextRun({ text: effectiveCompany, bold: true, size: 22 }),
+            new TextRun({
+              text: effectiveEmployee && effectiveEmployee !== '______'
+                ? ` bagi karyawan Bapak/Ibu: ${effectiveEmployee}.`
+                : ' bagi karyawan Bapak/Ibu.',
+              size: 22,
+            }),
+          ],
+        }),
+        new Paragraph({
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { after: 120, line: 260 },
+          children: [
+            new TextRun({ text: 'Program AI-Enabled Strategic Finance (RevoU X UI)', bold: true, size: 22 }),
+            new TextRun({ text: ' dirancang untuk para profesional finance yang ingin berperan lebih strategis di organisasinya. Peserta belajar memakai AI dalam pekerjaan finance sehari-hari dan langsung menerapkannya pada kasus di perusahaan masing-masing.', size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { after: 60, line: 260 },
+          children: [
+            new TextRun({ text: 'Selama program berlangsung, peserta akan:', bold: true, size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { after: 30, line: 260 },
+          children: [
+            new TextRun({ text: 'Menilai keputusan finance dari sisi akuntansi, pajak, dan hukum sekaligus, memakai kasus bisnis Indonesia.', size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { after: 30, line: 260 },
+          children: [
+            new TextRun({ text: 'Membangun empat asisten AI tanpa coding (capital structure, pajak, monthly reporting, deal check) yang tetap dapat dipakai di kantor setelah program selesai.', size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { after: 30, line: 260 },
+          children: [
+            new TextRun({ text: 'Menyusun model keuangan dan forecast dengan bantuan AI, lalu memeriksa hasilnya sebelum dibawa ke manajemen.', size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { after: 80, line: 260 },
+          children: [
+            new TextRun({ text: 'Mengerjakan capstone yang akan dipresentasikan di depan dosen UI dan panel.', size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          spacing: { before: 80, after: 50, line: 250 },
+          children: [new TextRun({ text: 'Detail Program:', bold: true, size: 22 })],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 30, line: 260 },
+          children: [
+            new TextRun({ text: 'Durasi : ', bold: true, size: 22 }),
+            new TextRun({ text: '13 minggu, mulai ', size: 22 }),
+            new TextRun({ text: startDate, size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 30, line: 260 },
+          children: [
+            new TextRun({ text: 'Format : ', bold: true, size: 22 }),
+            new TextRun({ text: currentTemplate.format, size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 30, line: 260 },
+          children: [
+            new TextRun({ text: 'Jadwal Sesi : ', bold: true, size: 22 }),
+            new TextRun({ text: currentTemplate.onlineSchedule, size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 30, line: 260 },
+          children: [
+            new TextRun({ text: 'Sertifikasi : ', bold: true, size: 22 }),
+            new TextRun({ text: currentTemplate.certification, size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 100, line: 260 },
+          children: [
+            new TextRun({ text: 'Biaya : ', bold: true, size: 22 }),
+            new TextRun({ text: normalPrice, strike: true, color: '4B5563', size: 22 }),
+            new TextRun({ text: ' ', size: 22 }),
+            new TextRun({ text: promoPrice, bold: true, size: 22 }),
+            new TextRun({ text: ' (harga khusus ', size: 22 }),
+            new TextRun({ text: 'early bird', italics: true, size: 22 }),
+            new TextRun({ text: ')', size: 22 }),
+          ],
+        }),
+        // PAGE 2 BREAK
+        new Paragraph({
+          children: [new PageBreak()],
+        }),
+        createHeaderTable(),
+        new Paragraph({
+          spacing: { before: 200, after: 80, line: 260 },
+          children: [new TextRun({ text: 'Manfaat bagi Organisasi:', bold: true, size: 22 })],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 40, line: 276 },
+          children: [
+            new TextRun({ text: 'Tim finance yang mampu menimbang keputusan pendanaan dan transaksi antarperusahaan secara lintas fungsi', size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 40, line: 276 },
+          children: [
+            new TextRun({ text: 'Asisten AI siap pakai untuk pekerjaan finance rutin seperti monthly reporting dan pengecekan transaksi', size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 40, line: 276 },
+          children: [
+            new TextRun({ text: 'Penggunaan AI yang lebih aman di tim finance, dengan kebiasaan memverifikasi output serta memahami privasi data dan jejak audit', size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 140, line: 276 },
+          children: [
+            new TextRun({ text: 'Karyawan yang lebih siap mengisi peran seperti Finance Manager, Head of FP&A, Financial Controller, atau Head of Finance', size: 22 }),
+          ],
         })
       );
     } else if (templateType === 'hr') {
@@ -1681,6 +1845,27 @@ export async function downloadDocx({
             new TextRun({ text: 'Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat memperoleh kesempatan untuk berkolaborasi dengan ', size: 22 }),
             new TextRun({ text: effectiveCompany, bold: true, size: 22 }),
             new TextRun({ text: ' dalam mendukung pengembangan kompetensi karyawan dan kapabilitas data & AI di organisasi.', size: 22 }),
+          ],
+        })
+      );
+    } else if (templateType === 'ui_fin') {
+      bodyParagraphs.push(
+        new Paragraph({
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { before: 140, after: 140, line: 276 },
+          children: [
+            new TextRun({ text: 'Kami percaya program ini dapat memberikan nilai tambah bagi ', size: 22 }),
+            new TextRun({ text: effectiveCompany, bold: true, size: 22 }),
+            new TextRun({ text: ', khususnya dalam memperkuat kapabilitas tim finance menghadapi kebutuhan bisnis yang semakin kompleks.', size: 22 }),
+          ],
+        }),
+        new Paragraph({
+          alignment: AlignmentType.JUSTIFIED,
+          spacing: { after: 160, line: 276 },
+          children: [
+            new TextRun({ text: 'Demikian penawaran ini kami sampaikan. Terima kasih atas waktu dan perhatian Bapak/Ibu. Kami berharap dapat berkolaborasi dengan ', size: 22 }),
+            new TextRun({ text: effectiveCompany, bold: true, size: 22 }),
+            new TextRun({ text: ' dalam mendukung pengembangan kompetensi karyawan.', size: 22 }),
           ],
         })
       );

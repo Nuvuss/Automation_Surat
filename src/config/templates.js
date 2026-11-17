@@ -4,11 +4,12 @@ export const LETTER_CATEGORIES = {
   LOC: 'loc',
 };
 
-// 7 Offering Programs (Surat Penawaran)
+// 8 Offering Programs (Surat Penawaran)
 export const OFFERING_PROGRAMS = [
   { id: 'itb', name: 'RevoU X ITB (Data-Driven & AI Decision Making)' },
   { id: 'itb_ds', name: 'RevoU X ITB (Applied Data Science with AI)' },
   { id: 'binus', name: 'RevoU X BINUS (Applied AI, Analytics & Automation)' },
+  { id: 'ui_fin', name: 'RevoU X UI (AI-Enabled Strategic Finance)' },
   { id: 'hr', name: 'Strategic HR with AI (RevoU Executive Program)' },
   { id: 'fsda', name: 'Full Stack Data Analytics (RevoU FSDA)' },
   { id: 'fsdm', name: 'Full Stack Digital Marketing (RevoU FSDM)' },
@@ -259,6 +260,34 @@ export const TEMPLATES = {
     signerName: 'Pita Rini Fajrian Ramadhani',
     signerEmail: 'admission@revou.co',
     signerTitle: 'Admission lead',
+    hasSignatureImage: false,
+  },
+  ui_fin: {
+    id: 'ui_fin',
+    name: 'RevoU X UI',
+    badge: 'Aktif',
+    pillClass: 'pill-ui-fin',
+    logo: '/revou-logo.png',
+    logoAlt: 'Logo RevoU',
+    seqNumber: '01',
+    programName: 'Program AI-Enabled Strategic Finance (RevoU X UI)',
+    subject: 'Informasi Program AI-Enabled Strategic Finance (RevoU X UI)',
+    defaultCompany: 'PT XXXXX',
+    defaultRole: 'Management',
+    defaultLocation: 'di tempat',
+    defaultEmployee: '______',
+    startDate: '23 February 2027',
+    duration: '13 minggu',
+    normalPrice: 'Rp15.000.000',
+    promoPrice: 'Rp13.500.000',
+    additionalNote: '(harga khusus early bird)',
+    format: 'Full online dan sesi graduation di kampus UI',
+    onlineSchedule: 'Selasa & Kamis, pukul 19.30–21.30 WIB',
+    certLabel: 'Sertifikasi',
+    certification: 'AI-Enabled Strategic Finance Certificate, diterbitkan oleh Universitas Indonesia dan RevoU',
+    signerName: 'Pita Rini Fajrian Ramadhani',
+    signerEmail: 'admission@revou.co',
+    signerTitle: 'Admission Lead',
     hasSignatureImage: false,
   }
 };
