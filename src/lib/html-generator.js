@@ -12,6 +12,8 @@ export function generatePlainText({
   effectiveEmployee,
   startDate,
   normalPrice,
+  promoPrice,
+  additionalNote,
   fullPromoPrice,
   effectiveCertification,
   signerName,
@@ -532,12 +534,16 @@ export function generateGoogleDocsHtml({
   effectiveEmployee,
   startDate,
   normalPrice,
+  promoPrice,
+  additionalNote,
   fullPromoPrice,
   effectiveCertification,
   signerName,
   signerEmail,
   signerTitle
 }) {
+  const safePromoPrice = promoPrice || currentTemplate?.promoPrice || 'Rp13.500.000';
+  const safeNote = additionalNote !== undefined ? additionalNote : (currentTemplate?.additionalNote || '(harga khusus early bird)');
   const highlightBg = '';
   return `
     <!DOCTYPE html>
@@ -660,7 +666,7 @@ export function generateGoogleDocsHtml({
           <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Format :</strong> ${currentTemplate.format}</li>
           <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Jadwal Sesi :</strong> ${currentTemplate.onlineSchedule}</li>
           <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Sertifikasi :</strong> ${currentTemplate.certification}</li>
-          <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Biaya :</strong> <span style="text-decoration: line-through; color: #4B5563;">${normalPrice}</span> <span style="${highlightBg}"><strong>${promoPrice || 'Rp13.500.000'}</strong> (harga khusus <em>early bird</em>)</span></li>
+          <li style="margin-bottom: 3pt; font-size: 11pt;"><strong>Biaya :</strong> <span style="text-decoration: line-through; color: #4B5563;">${normalPrice}</span> <span style="${highlightBg}"><strong>${safePromoPrice}</strong> ${safeNote && safeNote.includes('early bird') ? `${safeNote.split('early bird')[0]}<em>early bird</em>${safeNote.split('early bird')[1]}` : safeNote}</span></li>
         </ul>
         <p style="font-weight: bold; margin-top: 10pt; margin-bottom: 4pt; font-size: 11pt;">Manfaat bagi Organisasi:</p>
         <ul style="margin: 4pt 0 10pt 20pt; padding: 0;">

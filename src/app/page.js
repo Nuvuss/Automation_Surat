@@ -215,6 +215,8 @@ export default function SuratPenawaranGenerator() {
     effectiveEmployee,
     startDate,
     normalPrice,
+    promoPrice,
+    additionalNote,
     fullPromoPrice,
     effectiveCertification,
     signerName,

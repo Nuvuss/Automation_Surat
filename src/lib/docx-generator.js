@@ -12,6 +12,8 @@ export async function downloadDocx({
   effectiveEmployee,
   startDate,
   normalPrice,
+  promoPrice,
+  additionalNote,
   fullPromoPrice,
   effectiveCertification,
   signerName,
@@ -231,6 +233,8 @@ export async function downloadDocx({
       ],
     });
 
+    const safePromoPrice = promoPrice || currentTemplate?.promoPrice || 'Rp13.500.000';
+    const safeNote = additionalNote !== undefined ? additionalNote : (currentTemplate?.additionalNote || '(harga khusus early bird)');
     const bodyParagraphs = [];
 
     // PAGE 1: Date + Reference + Recipient + Intro + Program start
@@ -399,13 +403,12 @@ export async function downloadDocx({
             new TextRun({ text: ' di hadapan panel praktisi industri.', size: 22 }),
           ]
         }),
-        // PAGE 2 BREAK
+        // PAGE 2: Clean Page Break (Header is automatically supplied by section Header)
         new Paragraph({
           children: [new PageBreak()],
         }),
-        createHeaderTable(),
         new Paragraph({
-          spacing: { before: 200, after: 80, line: 260 },
+          spacing: { before: 80, after: 80, line: 260 },
           children: [new TextRun({ text: 'Detail Program:', bold: true, size: 22 })]
         }),
         new Paragraph({
@@ -608,19 +611,22 @@ export async function downloadDocx({
             new TextRun({ text: 'Biaya : ', bold: true, size: 22 }),
             new TextRun({ text: normalPrice, strike: true, color: '4B5563', size: 22 }),
             new TextRun({ text: ' ', size: 22 }),
-            new TextRun({ text: promoPrice, bold: true, size: 22 }),
-            new TextRun({ text: ' (harga khusus ', size: 22 }),
-            new TextRun({ text: 'early bird', italics: true, size: 22 }),
-            new TextRun({ text: ')', size: 22 }),
+            new TextRun({ text: safePromoPrice, bold: true, size: 22 }),
+            ...(safeNote && safeNote.includes('early bird') ? [
+              new TextRun({ text: ` ${safeNote.split('early bird')[0]}`, size: 22 }),
+              new TextRun({ text: 'early bird', italics: true, size: 22 }),
+              new TextRun({ text: safeNote.split('early bird')[1], size: 22 }),
+            ] : [
+              new TextRun({ text: safeNote ? ` ${safeNote}` : '', size: 22 }),
+            ]),
           ],
         }),
-        // PAGE 2 BREAK
+        // PAGE 2: Clean Page Break (Header is automatically supplied by section Header)
         new Paragraph({
           children: [new PageBreak()],
         }),
-        createHeaderTable(),
         new Paragraph({
-          spacing: { before: 200, after: 80, line: 260 },
+          spacing: { before: 80, after: 80, line: 260 },
           children: [new TextRun({ text: 'Manfaat bagi Organisasi:', bold: true, size: 22 })],
         }),
         new Paragraph({
